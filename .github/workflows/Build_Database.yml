@@ -13,8 +13,8 @@ jobs:
       contents: write
       
     env:
-      ROOT_DIR: ./azerothcore
-      MODULES_DIR: ./azerothcore/modules
+      ROOT_DIR: ./acore
+      MODULES_DIR: ./acore/modules
       ACORE_REPO: "https://github.com/mod-playerbots/azerothcore-wotlk.git"
       ACORE_BRANCH: "Playerbot"
       MODULES_INPUT: |
