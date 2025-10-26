@@ -1,4 +1,4 @@
-name: Build_Database
+name: Database
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: Playerbots_dev
+name: dev
 
 on:
   workflow_dispatch:
