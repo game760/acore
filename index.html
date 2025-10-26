@@ -176,7 +176,8 @@
             secondary: '#1e40af',
             dark: '#1e293b',
             light: '#f8fafc',
-            accent: '#3b82f6'
+            accent: '#3b82f6',
+            alternative: '#10b981' // 备用加速按钮颜色
           },
           fontFamily: {
             sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -404,12 +405,21 @@
             </div>
             <h3 class="text-xl font-semibold text-center mb-2">Windows</h3>
             <p class="text-gray-600 text-center mb-6">x64</p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/acore/releases/download/Playerbots_Win_X64/playerbots_Win_x64.zip" target="_blank" 
-               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
                data-type="windows">
               <i class="fa fa-download mr-2"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">点击下载</span>
+              <span class="lang-en">Global Accelerator</span>
+              <span class="lang-zh">全球加速</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Playerbots_Win_X64/playerbots_Win_x64.zip" target="_blank"
+               class="download-btn block w-full py-3 px-4 bg-alternative text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
+               data-type="windows">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Alternative Accelerator</span>
+              <span class="lang-zh">备用加速</span>
             </a>
             <div class="mt-4 text-center text-sm text-gray-500">
               <span class="mr-4">
@@ -433,12 +443,21 @@
             </div>
             <h3 class="text-xl font-semibold text-center mb-2">Linux</h3>
             <p class="text-gray-600 text-center mb-6">x64</p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/acore/releases/download/Playerbots_Linux_x64/Playerbots_linux_x64.tar.gz" target="_blank"
-               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
                data-type="linux">
               <i class="fa fa-download mr-2"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">点击下载</span>
+              <span class="lang-en">Global Accelerator</span>
+              <span class="lang-zh">全球加速</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Playerbots_Linux_x64/Playerbots_linux_x64.tar.gz" target="_blank"
+               class="download-btn block w-full py-3 px-4 bg-alternative text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
+               data-type="linux">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Alternative Accelerator</span>
+              <span class="lang-zh">备用加速</span>
             </a>
             <div class="mt-4 text-center text-sm text-gray-500">
               <span class="mr-4">
@@ -468,11 +487,19 @@
               <span class="lang-en">General</span>
               <span class="lang-zh">通用</span>
             </p>
-            <button id="map-download-btn" class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors"
+            <!-- 全球加速按钮 -->
+            <button id="map-download-btn" class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
                     data-type="maps">
               <i class="fa fa-download mr-2"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">点击下载</span>
+              <span class="lang-en">Global Accelerator</span>
+              <span class="lang-zh">全球加速</span>
+            </button>
+            <!-- 备用加速按钮 -->
+            <button id="map-download-alt-btn" class="download-btn block w-full py-3 px-4 bg-alternative text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
+                    data-type="maps">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Alternative Accelerator</span>
+              <span class="lang-zh">备用加速</span>
             </button>
             <div class="mt-4 text-center text-sm text-gray-500">
               <span class="mr-4">
@@ -502,12 +529,21 @@
               <span class="lang-en">MySQL</span>
               <span class="lang-zh">MySQL</span>
             </p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/ACore/releases/download/DataBase/DataBase.tar.gz" target="_blank"
-               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
                data-type="database">
               <i class="fa fa-download mr-2"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">点击下载</span>
+              <span class="lang-en">Global Accelerator</span>
+              <span class="lang-zh">全球加速</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/ACore/releases/download/DataBase/DataBase.tar.gz" target="_blank"
+               class="download-btn block w-full py-3 px-4 bg-alternative text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
+               data-type="database">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Alternative Accelerator</span>
+              <span class="lang-zh">备用加速</span>
             </a>
             <div class="mt-4 text-center text-sm text-gray-500">
               <span class="mr-4">
@@ -522,6 +558,14 @@
             </div>
           </div>
         </div>
+      </div>
+      
+      <!-- 新增的地区提示 -->
+      <div class="mt-10 max-w-6xl mx-auto bg-blue-50 border border-blue-100 rounded-lg p-4 text-center">
+        <p class="text-gray-700">
+          <span class="lang-en">For users outside Chinese mainland, prefer Global Accelerator. Users in Chinese mainland should use Alternative Accelerator.</span>
+          <span class="lang-zh">国外地区首选全球加速，中国大陆使用备用加速。</span>
+        </p>
       </div>
     </div>
   </section>
@@ -593,12 +637,21 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="dbc">782</span>
             </p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/dbc.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="dbc">
               <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">下载</span>
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/dbc.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-alternative text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="dbc">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Alternative</span>
+              <span class="lang-zh">备用</span>
             </a>
           </div>
           
@@ -616,12 +669,21 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="vmap">643</span>
             </p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/vmaps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="vmap">
               <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">下载</span>
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/vmaps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-alternative text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="vmap">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Alternative</span>
+              <span class="lang-zh">备用</span>
             </a>
           </div>
           
@@ -639,12 +701,21 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="mmaps">598</span>
             </p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/mmaps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="mmaps">
               <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">下载</span>
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/mmaps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-alternative text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="mmaps">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Alternative</span>
+              <span class="lang-zh">备用</span>
             </a>
           </div>
           
@@ -662,12 +733,21 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="cameras">421</span>
             </p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/Cameras.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="cameras">
               <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">下载</span>
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/Cameras.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-alternative text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="cameras">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Alternative</span>
+              <span class="lang-zh">备用</span>
             </a>
           </div>
           
@@ -685,12 +765,21 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="maps-base">812</span>
             </p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/maps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="maps-base">
               <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">下载</span>
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/maps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-alternative text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="maps-base">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Alternative</span>
+              <span class="lang-zh">备用</span>
             </a>
           </div>
 
@@ -711,12 +800,21 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="runlib">926</span>
             </p>
+            <!-- 全球加速按钮 -->
             <a href="https://github.com/game760/acore/releases/download/Runlib/Runlib.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="runlib">
               <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Download</span>
-              <span class="lang-zh">下载</span>
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球</span>
+            </a>
+            <!-- 备用加速按钮 -->
+            <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Runlib/Runlib.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-alternative text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="runlib">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Alternative</span>
+              <span class="lang-zh">备用</span>
             </a>
           </div>
         </div>
@@ -1181,7 +1279,7 @@
           const downloadType = this.getAttribute('data-type');
           
           // 如果是地图按钮，先打开弹窗
-          if (downloadType === 'maps' && this.id === 'map-download-btn') {
+          if (downloadType === 'maps' && (this.id === 'map-download-btn' || this.id === 'map-download-alt-btn')) {
             e.preventDefault();
             openMapModal();
             return;
@@ -1271,6 +1369,7 @@
 
       // 初始化地图弹窗事件
       document.getElementById('map-download-btn')?.addEventListener('click', openMapModal);
+      document.getElementById('map-download-alt-btn')?.addEventListener('click', openMapModal);
       document.getElementById('close-modal')?.addEventListener('click', closeMapModal);
       // 点击遮罩关闭弹窗
       document.getElementById('map-modal')?.addEventListener('click', (e) => {
