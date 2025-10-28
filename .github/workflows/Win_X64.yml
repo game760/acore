@@ -104,7 +104,7 @@ jobs:
       - name: 上传Release
         uses: ncipollo/release-action@v1
         with:
-           tag: "Playerbots_Win_X64"
+           tag: "Win_X64"
            name: "Playerbots_Win_X64"
            body: |
                  ### ${{ steps.ts.outputs.utctime }}
