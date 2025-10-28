@@ -93,7 +93,7 @@ jobs:
       - name: 发布Release
         uses: ncipollo/release-action@v1
         with:
-          tag: "Playerbots_Linux_x64"
+          tag: "Linux_x64"
           name: "Playerbots_Linux_x64"
           body: |
                 ### ${{ steps.ts.outputs.utcs }}
