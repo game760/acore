@@ -316,15 +316,17 @@
             return value;
         }
 
-        // 创建工作流卡片
+        // 创建工作流卡片 - 修复：添加data-workflow属性，统一ID格式（移除.yml后缀）
         function createWorkflowCards() {
             const container = document.querySelector('.grid');
             container.innerHTML = ''; // 清空容器防止重复创建
             
             config.workflows.forEach(workflow => {
+                // 生成标准化ID（移除.yml后缀避免选择器问题）
+                const cardKey = `${workflow.owner}-${workflow.repo}-${workflow.file.replace('.yml', '')}`;
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-lg shadow p-6 card-hover';
-                card.id = `card-${workflow.owner}-${workflow.repo}-${workflow.file}`;
+                card.id = `card-${cardKey}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-4">
                         <h3 class="text-lg font-semibold workflow-name" 
@@ -333,16 +335,16 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <i class="fa fa-question-circle text-2xl text-gray-400" 
-                               id="icon-${workflow.owner}-${workflow.repo}-${workflow.file}"></i>
+                               id="icon-${cardKey}"></i>
                             <span class="text-gray-600" 
-                                  id="status-${workflow.owner}-${workflow.repo}-${workflow.file}">${getI18n(currentLang, 'waiting')}</span>
+                                  id="status-${cardKey}">${getI18n(currentLang, 'waiting')}</span>
                         </div>
                         <span class="text-sm text-gray-500" 
-                              id="time-${workflow.owner}-${workflow.repo}-${workflow.file}">-</span>
+                              id="time-${cardKey}">-</span>
                     </div>
                     <div class="mt-4 pt-4 border-t border-gray-100 text-sm">
                         <a href="#" target="_blank" class="text-primary hover:underline flex items-center" 
-                           id="link-${workflow.owner}-${workflow.repo}-${workflow.file}">
+                           id="link-${cardKey}">
                             <i class="fa fa-external-link mr-1"></i> ${getI18n(currentLang, 'viewDetails')}
                         </a>
                     </div>
@@ -351,23 +353,26 @@
             });
         }
 
-        // 更新所有工作流卡片的语言
+        // 更新所有工作流卡片的语言 - 修复：正确定位.workflow-name元素
         function updateAllWorkflowCards() {
             config.workflows.forEach(workflow => {
-                // 修复选择器语法：用反引号包裹模板字符串
+                // 修复：使用正确的选择器定位工作流名称元素
                 const nameElem = document.querySelector(`.workflow-name[data-workflow="${workflow.file}"]`);
                 if (nameElem) {
                     nameElem.textContent = workflow.name[currentLang];
                 }
                 
+                // 生成标准化ID
+                const cardKey = `${workflow.owner}-${workflow.repo}-${workflow.file.replace('.yml', '')}`;
+                
                 // 更新查看详情链接文本
-                const linkElem = document.getElementById(`link-${workflow.owner}-${workflow.repo}-${workflow.file}`);
+                const linkElem = document.getElementById(`link-${cardKey}`);
                 if (linkElem) {
                     linkElem.innerHTML = `<i class="fa fa-external-link mr-1"></i> ${getI18n(currentLang, 'viewDetails')}`;
                 }
                 
                 // 如果已有状态数据，更新状态文本
-                const statusElem = document.getElementById(`status-${workflow.owner}-${workflow.repo}-${workflow.file}`);
+                const statusElem = document.getElementById(`status-${cardKey}`);
                 if (statusElem) {
                     const currentStatus = statusElem.getAttribute('data-status');
                     const currentConclusion = statusElem.getAttribute('data-conclusion');
@@ -384,7 +389,7 @@
                 }
                 
                 // 更新时间文本
-                const timeElem = document.getElementById(`time-${workflow.owner}-${workflow.repo}-${workflow.file}`);
+                const timeElem = document.getElementById(`time-${cardKey}`);
                 if (timeElem) {
                     const timestamp = timeElem.getAttribute('data-timestamp');
                     if (timestamp) {
@@ -412,6 +417,11 @@
                 } else {
                     updateStatusIndicator(getI18n(currentLang, 'initCompleted'), 'text-success');
                 }
+
+                // 初始化完成后立即更新最后更新时间 - 新增修复
+                const now = new Date();
+                document.getElementById('last-update').textContent = 
+                    `${getI18n(currentLang, 'lastUpdate').split('：')[0]}：${now.toLocaleString()}`;
 
                 // 初始化完成后立即获取一次状态
                 fetchAllWorkflowStatuses();
@@ -491,21 +501,21 @@
             let hasChanges = false;
             
             config.workflows.forEach(workflow => {
-                const key = `${workflow.owner}-${workflow.repo}-${workflow.file}`;
-                const statusElem = document.getElementById(`status-${key}`);
+                const cardKey = `${workflow.owner}-${workflow.repo}-${workflow.file.replace('.yml', '')}`;
+                const statusElem = document.getElementById(`status-${cardKey}`);
                 const currentStatus = statusElem.getAttribute('data-status') || 'unknown';
                 const currentConclusion = statusElem.getAttribute('data-conclusion') || '';
                 // 处理conclusion为null的情况，避免拼接出“completed-”这类无效值
                 const currentState = `${currentStatus}-${currentConclusion || 'none'}`;
                 
                 // 首次记录状态：只存储，不标记变化
-                if (!previousWorkflowStates[key]) {
-                    previousWorkflowStates[key] = currentState;
+                if (!previousWorkflowStates[cardKey]) {
+                    previousWorkflowStates[cardKey] = currentState;
                 } 
                 // 检测到状态变化：标记并更新存储
-                else if (previousWorkflowStates[key] !== currentState) {
+                else if (previousWorkflowStates[cardKey] !== currentState) {
                     hasChanges = true;
-                    previousWorkflowStates[key] = currentState;
+                    previousWorkflowStates[cardKey] = currentState;
                 }
             });
             
@@ -520,6 +530,7 @@
         async function fetchSingleWorkflowStatus(workflow) {
             const key = `${workflow.owner}-${workflow.repo}-${workflow.file}`;
             const wfId = workflowIds[key];
+            const cardKey = `${workflow.owner}-${workflow.repo}-${workflow.file.replace('.yml', '')}`;
 
             if (!wfId) {
                 updateWorkflowCard(workflow, { status: 'unknown', conclusion: 'unknown', updated_at: new Date().toISOString() });
@@ -559,12 +570,12 @@
 
         // 更新工作流卡片
         function updateWorkflowCard(workflow, runData) {
-            const key = `${workflow.owner}-${workflow.repo}-${workflow.file}`;
-            const iconElem = document.getElementById(`icon-${key}`);
-            const statusElem = document.getElementById(`status-${key}`);
-            const timeElem = document.getElementById(`time-${key}`);
-            const linkElem = document.getElementById(`link-${key}`);
-            const cardElem = document.getElementById(`card-${key}`);
+            const cardKey = `${workflow.owner}-${workflow.repo}-${workflow.file.replace('.yml', '')}`;
+            const iconElem = document.getElementById(`icon-${cardKey}`);
+            const statusElem = document.getElementById(`status-${cardKey}`);
+            const timeElem = document.getElementById(`time-${cardKey}`);
+            const linkElem = document.getElementById(`link-${cardKey}`);
+            const cardElem = document.getElementById(`card-${cardKey}`);
 
             // 保存状态数据用于语言切换时更新
             statusElem.setAttribute('data-status', runData.status);
@@ -629,7 +640,7 @@
             linkElem.href = link;
         }
 
-        // 添加到历史记录
+        // 添加到历史记录 - 修复：使用唯一标识进行去重
         function addToHistory(workflow, runData) {
             // 跳过无效状态或超过3天的记录
             if (!runData.status || runData.status === 'no_runs' || runData.status === 'unknown') return;
@@ -659,7 +670,11 @@
                 };
             }
             
+            // 生成唯一标识（用于去重）
+            const uniqueId = `${workflow.owner}-${workflow.repo}-${workflow.file}`;
+            
             const historyItem = {
+                id: uniqueId, // 新增：唯一标识用于去重
                 timestamp: buildTime,
                 workflow: workflow.name,
                 status: statusInfo.text,
@@ -668,10 +683,9 @@
                 icon: statusInfo.icon
             };
 
-            // 去重逻辑：1分钟内相同工作流+相同状态视为重复
+            // 去重逻辑：1分钟内相同工作流+相同状态视为重复 - 修复：使用唯一ID比较
             const isDuplicate = history.some(item => 
-                // 比较工作流唯一标识（用file名对应的中文名称，避免语言切换影响）
-                item.workflow.zh === historyItem.workflow.zh && 
+                item.id === historyItem.id &&  // 使用唯一ID比较
                 item.statusKey === historyItem.statusKey &&
                 Math.abs(item.timestamp - historyItem.timestamp) < 60000 // 1分钟内
             );
