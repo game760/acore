@@ -226,7 +226,7 @@
 
         // 配置信息
         const config = {
-            token: "{{API_GITHUB_TOKEN}}", // 请替换为您的GitHub令牌
+            token: "{{API_GITHUB_TOKEN}}",
             interval: 60000, // 60秒刷新一次
             workflows: [
                 { name: { zh: 'Windows-x64', en: 'Windows-x64' }, file: 'Win_X64.yml', owner: 'game760', repo: 'acore' },
@@ -263,7 +263,7 @@
             createWorkflowCards();
             
             if (!config.token || config.token === "{{API_GITHUB_TOKEN}}") {
-                alert('请先在代码中配置有效GitHub个人访问令牌(PAT)，需包含repo和workflow权限\nPlease configure a valid GitHub Personal Access Token (PAT) in the code first, which needs to include repo and workflow permissions');
+                alert('Please configure a valid GitHub Personal Access Token (PAT) in the code first, which needs to include repo and workflow permissions');
             } else {
                 fetchAllWorkflowIds();
                 // 设置定时器定期更新
@@ -354,34 +354,42 @@
         // 更新所有工作流卡片的语言
         function updateAllWorkflowCards() {
             config.workflows.forEach(workflow => {
-                // 更新工作流名称
-                document.querySelector(`.workflow-name[data-workflow="${workflow.file}"]`)
-                    .textContent = workflow.name[currentLang];
+                // 修复选择器语法：用反引号包裹模板字符串
+                const nameElem = document.querySelector(`.workflow-name[data-workflow="${workflow.file}"]`);
+                if (nameElem) {
+                    nameElem.textContent = workflow.name[currentLang];
+                }
                 
                 // 更新查看详情链接文本
-                document.getElementById(`link-${workflow.owner}-${workflow.repo}-${workflow.file}`)
-                    .innerHTML = `<i class="fa fa-external-link mr-1"></i> ${getI18n(currentLang, 'viewDetails')}`;
+                const linkElem = document.getElementById(`link-${workflow.owner}-${workflow.repo}-${workflow.file}`);
+                if (linkElem) {
+                    linkElem.innerHTML = `<i class="fa fa-external-link mr-1"></i> ${getI18n(currentLang, 'viewDetails')}`;
+                }
                 
                 // 如果已有状态数据，更新状态文本
                 const statusElem = document.getElementById(`status-${workflow.owner}-${workflow.repo}-${workflow.file}`);
-                const currentStatus = statusElem.getAttribute('data-status');
-                const currentConclusion = statusElem.getAttribute('data-conclusion');
-                
-                if (currentStatus) {
-                    let statusText;
-                    if (currentStatus === 'completed' && currentConclusion) {
-                        statusText = getI18n(currentLang, `status.completed.${currentConclusion}`);
-                    } else {
-                        statusText = getI18n(currentLang, `status.${currentStatus}`);
+                if (statusElem) {
+                    const currentStatus = statusElem.getAttribute('data-status');
+                    const currentConclusion = statusElem.getAttribute('data-conclusion');
+                    
+                    if (currentStatus) {
+                        let statusText;
+                        if (currentStatus === 'completed' && currentConclusion) {
+                            statusText = getI18n(currentLang, `status.completed.${currentConclusion}`);
+                        } else {
+                            statusText = getI18n(currentLang, `status.${currentStatus}`);
+                        }
+                        statusElem.textContent = statusText;
                     }
-                    statusElem.textContent = statusText;
                 }
                 
                 // 更新时间文本
                 const timeElem = document.getElementById(`time-${workflow.owner}-${workflow.repo}-${workflow.file}`);
-                const timestamp = timeElem.getAttribute('data-timestamp');
-                if (timestamp) {
-                    timeElem.textContent = formatRelativeTime(new Date(timestamp));
+                if (timeElem) {
+                    const timestamp = timeElem.getAttribute('data-timestamp');
+                    if (timestamp) {
+                        timeElem.textContent = formatRelativeTime(new Date(timestamp));
+                    }
                 }
             });
         }
@@ -485,20 +493,23 @@
             config.workflows.forEach(workflow => {
                 const key = `${workflow.owner}-${workflow.repo}-${workflow.file}`;
                 const statusElem = document.getElementById(`status-${key}`);
-                const currentState = `${statusElem.getAttribute('data-status')}-${statusElem.getAttribute('data-conclusion')}`;
+                const currentStatus = statusElem.getAttribute('data-status') || 'unknown';
+                const currentConclusion = statusElem.getAttribute('data-conclusion') || '';
+                // 处理conclusion为null的情况，避免拼接出“completed-”这类无效值
+                const currentState = `${currentStatus}-${currentConclusion || 'none'}`;
                 
-                // 首次记录状态
+                // 首次记录状态：只存储，不标记变化
                 if (!previousWorkflowStates[key]) {
                     previousWorkflowStates[key] = currentState;
                 } 
-                // 检测到状态变化
+                // 检测到状态变化：标记并更新存储
                 else if (previousWorkflowStates[key] !== currentState) {
                     hasChanges = true;
                     previousWorkflowStates[key] = currentState;
                 }
             });
             
-            // 如果有状态变化则刷新页面
+            // 只有真的有变化时才刷新
             if (hasChanges) {
                 console.log('检测到工作流状态变化，刷新页面');
                 window.location.reload();
@@ -657,16 +668,17 @@
                 icon: statusInfo.icon
             };
 
-            // 去重逻辑
-            const lastItem = history.find(item => 
+            // 去重逻辑：1分钟内相同工作流+相同状态视为重复
+            const isDuplicate = history.some(item => 
+                // 比较工作流唯一标识（用file名对应的中文名称，避免语言切换影响）
                 item.workflow.zh === historyItem.workflow.zh && 
                 item.statusKey === historyItem.statusKey &&
-                Math.abs(item.timestamp - historyItem.timestamp) < 60000 // 1分钟内的相同状态视为重复
+                Math.abs(item.timestamp - historyItem.timestamp) < 60000 // 1分钟内
             );
             
-            if (!lastItem) {
+            if (!isDuplicate) {
                 history.unshift(historyItem);
-                // 按时间排序
+                // 按时间降序排序
                 history.sort((a, b) => b.timestamp - a.timestamp);
                 // 清理超过3天的记录
                 cleanupOldHistory();
