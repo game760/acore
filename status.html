@@ -175,9 +175,20 @@
         </div>
 
         <div class="bg-white rounded-lg shadow p-4 mb-8">
-            <h2 class="text-lg font-semibold mb-3 flex items-center" data-i18n="historyTitle">
-                <i class="fa fa-history text-primary mr-2"></i>构建历史记录（每个任务最近3条）
-            </h2>
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-semibold flex items-center" data-i18n="historyTitle">
+                    <i class="fa fa-history text-primary mr-2"></i>构建历史记录
+                </h2>
+                <div class="flex items-center text-sm">
+                    <span data-i18n="historyRecordsPerWorkflow">每条工作流显示：</span>
+                    <select id="history-count-select" class="ml-2 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary">
+                        <option value="2">2条</option>
+                        <option value="3" selected>3条</option>
+                        <option value="5">5条</option>
+                        <option value="10">10条</option>
+                    </select>
+                </div>
+            </div>
             <div id="history-container" class="space-y-2 max-h-[600px] overflow-y-auto p-2">
                 <!-- 历史记录将按工作流分组显示 -->
             </div>
@@ -204,7 +215,8 @@
                 updateCompleted: "更新完成",
                 updateFailed: "更新失败",
                 viewDetails: "查看详情",
-                historyTitle: "构建历史记录（每个任务最近3条）",
+                historyTitle: "构建历史记录",
+                historyRecordsPerWorkflow: "每条工作流显示：",
                 noHistory: "暂无任何构建记录",
                 noHistoryForWorkflow: "暂无该工作流的构建记录",
                 footer: "数据来源: GitHub API | 刷新间隔: 60秒",
@@ -243,7 +255,8 @@
                 updateCompleted: "Update completed",
                 updateFailed: "Update failed",
                 viewDetails: "View details",
-                historyTitle: "Build History (Last 3 per workflow)",
+                historyTitle: "Build History",
+                historyRecordsPerWorkflow: "Records per workflow:",
                 noHistory: "No build records available",
                 noHistoryForWorkflow: "No build records for this workflow",
                 footer: "Data source: GitHub API | Refresh interval: 60s",
@@ -278,6 +291,7 @@
         const config = {
             token: "{{API_GITHUB_TOKEN}}",
             interval: 60000, // 1分钟刷新一次
+            historyRecordsPerWorkflow: 3, // 每个工作流默认显示的历史记录数量
             workflows: [
                 { 
                     id: "Win_X64", 
@@ -310,8 +324,10 @@
             ]
         };
 
-        // 每个工作流最多保留3条记录
-        const maxRecordsPerWorkflow = 3;
+        // 存储工作流ID映射
+        const workflowIds = {};
+        // 按工作流分组存储历史记录（键：工作流唯一标识，值：该工作流的记录数组）
+        const groupedHistory = {};
 
         // 动态状态图标映射（带动画效果）
         const statusIcons = {
@@ -329,11 +345,6 @@
             unknown: { icon: 'fa-question-circle', color: 'gray-400', animation: '' }
         };
 
-        // 存储工作流ID映射
-        const workflowIds = {};
-        // 按工作流分组存储历史记录（键：工作流唯一标识，值：该工作流的记录数组）
-        const groupedHistory = {};
-
         // 初始化页面
         document.addEventListener('DOMContentLoaded', () => {
             // 绑定语言切换事件
@@ -342,6 +353,13 @@
             
             // 绑定状态说明面板切换事件
             document.getElementById('toggle-legend').addEventListener('click', toggleStatusLegend);
+            
+            // 绑定历史记录数量选择事件
+            document.getElementById('history-count-select').addEventListener('change', function() {
+                config.historyRecordsPerWorkflow = parseInt(this.value);
+                // 重新渲染历史记录
+                renderHistory();
+            });
             
             createWorkflowCards();
             
@@ -658,8 +676,9 @@
             }
 
             try {
+                // 根据需要显示的历史记录数量，调整API请求的记录数
                 const response = await fetch(
-                    `https://api.github.com/repos/${workflow.owner}/${workflow.repo}/actions/workflows/${wfId}/runs?per_page=3`, // 获取最近3条记录
+                    `https://api.github.com/repos/${workflow.owner}/${workflow.repo}/actions/workflows/${wfId}/runs?per_page=${config.historyRecordsPerWorkflow}`,
                     {
                         headers: {
                             'Accept': 'application/vnd.github.v3+json',
@@ -790,7 +809,7 @@
             }, 200);
         }
 
-        // 添加到历史记录（按工作流分组，每组最多3条，确保最新的在最上方）
+        // 添加到历史记录（按工作流分组，每组最多N条，确保最新的在最上方）
         function addToHistory(workflow, runData) {
             // 1. 过滤无效记录（无状态、无ID、无时间的记录不保存）
             if (!runData.status || !runData.id || !runData.updated_at) {
@@ -824,10 +843,11 @@
                 statusKey: statusInfo.key,
                 color: statusInfo.color,
                 icon: statusInfo.icon,
-                animation: statusInfo.animation
+                animation: statusInfo.animation,
+                url: runData.html_url // 构建详情链接
             };
 
-            // 4. 按工作流ID分组存储（确保每组最多3条）
+            // 4. 按工作流ID分组存储（确保每组最多N条）
             const workflowKey = workflow.id; // 用工作流唯一ID作为分组键
             // 初始化该工作流的记录数组（若未存在）
             if (!groupedHistory[workflowKey]) {
@@ -843,19 +863,19 @@
             // 6. 添加新记录并按时间倒序排序（最新的在前）
             groupedHistory[workflowKey].push(historyItem);
             
-            // 关键改进：强制按时间戳倒序排序，确保最新的记录在最上方
+            // 强制按时间戳倒序排序，确保最新的记录在最上方
             groupedHistory[workflowKey].sort((a, b) => b.timestamp - a.timestamp);
             
-            // 仅保留最近maxRecordsPerWorkflow条（删除超出部分）
-            if (groupedHistory[workflowKey].length > maxRecordsPerWorkflow) {
-                groupedHistory[workflowKey].splice(maxRecordsPerWorkflow);
+            // 仅保留最近config.historyRecordsPerWorkflow条（删除超出部分）
+            if (groupedHistory[workflowKey].length > config.historyRecordsPerWorkflow) {
+                groupedHistory[workflowKey].splice(config.historyRecordsPerWorkflow);
             }
 
             // 7. 重新渲染历史记录
             renderHistory();
         }
 
-        // 渲染历史记录（按工作流分组，每组最多3条，最新的在最上方）
+        // 渲染历史记录（按工作流分组，每组最多N条，最新的在最上方）
         function renderHistory() {
             const container = document.getElementById('history-container');
             container.innerHTML = ''; // 清空原有内容
@@ -899,7 +919,10 @@
                                 <i class="fa ${record.icon} text-${record.color} ${record.animation} text-sm"></i>
                                 <span class="text-${record.color} text-sm">${statusText}</span>
                             </div>
-                            <span class="text-gray-500 text-xs">${record.timestamp.toLocaleString()}</span>
+                            <a href="${record.url || '#'}" target="_blank" class="text-gray-500 text-xs hover:text-primary flex items-center">
+                                ${record.timestamp.toLocaleString()}
+                                <i class="fa fa-external-link ml-1 text-[8px]"></i>
+                            </a>
                         `;
                         recordsContainer.appendChild(entry);
 
