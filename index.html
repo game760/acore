@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,7 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 
   <style>
-    /* 卡片hover上浮效果 */
+    /* 原有样式保持不变 */
     .hover-lift {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -21,7 +20,6 @@
       transform: translateY(-5px);
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
-    /* 弹窗过渡动画 */
     .fade-in {
       animation: fadeIn 0.3s ease-in-out;
     }
@@ -46,7 +44,6 @@
       }
     }
 
-    /* 语言切换样式 */
     .lang-zh {
       display: none;
     }
@@ -57,22 +54,18 @@
       display: inline;
     }
 
-    /* 基础样式 */
     body {
       @apply bg-gray-50 font-sans text-gray-800;
     }
 
-    /* 导航栏样式 */
     #navbar {
       @apply sticky top-0 z-50 bg-white shadow-md transition-all duration-300;
     }
 
-    /* 移动端菜单样式 */
     #mobile-menu {
       @apply md:hidden hidden;
     }
 
-    /* Banner区域样式（渐变纯色背景） */
     .wotlk-banner-bg {
       background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
       color: white;
@@ -83,32 +76,26 @@
       overflow: hidden;
     }
 
-    /* 下载区域样式 */
     #downloads {
       @apply py-16 bg-gray-50;
     }
 
-    /* 统计图表区域 */
     #stats {
       @apply py-12 bg-white;
     }
 
-    /* 地图下载模态框样式 */
     #map-modal {
       @apply fixed inset-0 z-50 flex items-center justify-center hidden;
     }
 
-    /* 模态框内容样式 */
     #map-modal .relative {
       @apply bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto scale-in mx-4;
     }
 
-    /* 图表区域样式 */
     #downloadsChart {
       @apply h-64;
     }
 
-    /* 仓库统计样式 */
     .repo-stats {
       @apply py-16 bg-gradient-to-r from-blue-50 to-indigo-50;
     }
@@ -117,7 +104,6 @@
       @apply bg-white rounded-2xl shadow-md p-8 text-center hover-lift border border-gray-100;
     }
 
-    /* 统计数据加载动画 */
     .stat-number {
       opacity: 0;
       transform: translateY(10px);
@@ -128,7 +114,6 @@
       transform: translateY(0);
     }
 
-    /* FAQ 区域样式 */
     .faq-toggle {
       @apply w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none;
     }
@@ -137,7 +122,6 @@
       @apply px-6 pb-4 hidden;
     }
 
-    /* 页脚样式 */
     footer {
       @apply bg-gray-900 text-white py-10;
     }
@@ -146,12 +130,10 @@
       @apply border-gray-700 mt-12 pt-8 text-center text-gray-500;
     }
 
-    /* 新增：模态框标题背景 */
     .gradient-bg {
       background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
     }
 
-    /* 下载计数动画 */
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.1); }
@@ -167,7 +149,6 @@
     }
   </style>
   
-  <!-- Tailwind Configuration -->
   <script>
     tailwind.config = {
       theme: {
@@ -191,7 +172,7 @@
 </head>
 
 <body class="bg-gray-50 font-sans text-gray-800" zh>
-  <!-- Navigation Bar -->
+  <!-- 导航栏部分保持不变 -->
   <header class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300" id="navbar">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center py-4">
@@ -224,7 +205,6 @@
         </nav>
         
         <div class="flex items-center space-x-4">
-          <!-- Desktop Language Toggle -->
           <div class="hidden md:flex items-center border rounded-md overflow-hidden">
             <button id="lang-en-btn" class="px-3 py-2 text-sm font-medium text-primary bg-white hover:bg-blue-50 transition-colors">EN</button>
             <button id="lang-zh-btn" class="px-3 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-blue-50 transition-colors">中文</button>
@@ -236,10 +216,8 @@
         </div>
       </div>
       
-      <!-- Mobile Menu -->
       <div class="md:hidden hidden" id="mobile-menu">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <!-- Mobile Language Toggle -->
           <div class="flex items-center justify-between p-3 border-b border-gray-100">
             <span class="text-sm font-medium text-gray-500">
               <span class="lang-en">Language</span>
@@ -276,9 +254,8 @@
     </div>
   </header>
 
-  <!-- Banner区域（渐变纯色背景） -->
+  <!-- Banner区域保持不变 -->
   <section class="wotlk-banner-bg text-white py-16 md:py-24">
-    <!-- 装饰元素 -->
     <div class="absolute top-20 left-10 md:left-20 w-32 h-32 md:w-48 md:h-48 rounded-full bg-white/10 blur-2xl"></div>
     <div class="absolute bottom-20 right-10 md:right-20 w-24 h-24 md:w-36 md:h-36 rounded-full bg-white/10 blur-2xl"></div>
     
@@ -301,7 +278,7 @@
     </div>
   </section>
 
-  <!-- 仓库统计区域（优化版） -->
+  <!-- 仓库统计区域保持不变 -->
   <section class="repo-stats py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
@@ -315,9 +292,7 @@
         </p>
       </div>
       
-      <!-- 统计卡片容器：使用grid确保对齐，增加间距提升呼吸感 -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-        <!-- Stars 统计卡片（优化样式+对齐） -->
         <div class="stat-card flex flex-col items-center justify-between">
           <div class="text-center mb-6">
             <div class="flex items-center justify-center h-20 w-20 rounded-full bg-yellow-100 text-yellow-500 mb-4 mx-auto">
@@ -333,7 +308,6 @@
           </p>
         </div>
         
-        <!-- Forks 统计卡片 -->
         <div class="stat-card flex flex-col items-center justify-between">
           <div class="text-center mb-6">
             <div class="flex items-center justify-center h-20 w-20 rounded-full bg-green-100 text-green-500 mb-4 mx-auto">
@@ -349,7 +323,6 @@
           </p>
         </div>
         
-        <!-- Issues 统计卡片 -->
         <div class="stat-card flex flex-col items-center justify-between">
           <div class="text-center mb-6">
             <div class="flex items-center justify-center h-20 w-20 rounded-full bg-red-100 text-red-500 mb-4 mx-auto">
@@ -365,7 +338,6 @@
           </p>
         </div>
         
-        <!-- Contributors 统计卡片 -->
         <div class="stat-card flex flex-col items-center justify-between">
           <div class="text-center mb-6">
             <div class="flex items-center justify-center h-20 w-20 rounded-full bg-purple-100 text-purple-500 mb-4 mx-auto">
@@ -382,7 +354,6 @@
         </div>
       </div>
       
-      <!-- GitHub跳转按钮（优化位置和样式） -->
       <div class="text-center mt-12">
         <a href="https://github.com/azerothcore/azerothcore-wotlk" target="_blank" 
            class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-all shadow-md hover:shadow-lg">
@@ -394,7 +365,7 @@
     </div>
   </section>
 
-  <!-- Download Section (4 Columns) -->
+  <!-- 下载区域保持不变 -->
   <section id="downloads" class="py-16 bg-gray-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
@@ -406,7 +377,6 @@
       
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
   
-        <!-- Windows Download -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
           <div class="p-6">
             <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-primary mb-4 mx-auto">
@@ -414,7 +384,6 @@
             </div>
             <h3 class="text-xl font-semibold text-center mb-2">Windows</h3>
             <p class="text-gray-600 text-center mb-6">x64</p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/acore/releases/download/Win_X64/Playerbots_Win_x64.zip" target="_blank" 
                class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
                data-type="windows">
@@ -422,7 +391,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Win_X64/Playerbots_Win_x64.zip" target="_blank"
                class="download-btn block w-full py-3 px-4 bg-Asia text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
                data-type="windows">
@@ -444,7 +412,6 @@
           </div>
         </div>
         
-        <!-- Linux Download -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
           <div class="p-6">
             <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-primary mb-4 mx-auto">
@@ -452,7 +419,6 @@
             </div>
             <h3 class="text-xl font-semibold text-center mb-2">Linux</h3>
             <p class="text-gray-600 text-center mb-6">x64</p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/acore/releases/download/Linux_x64/Playerbots_linux_x64.tar.gz" target="_blank"
                class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
                data-type="linux">
@@ -460,7 +426,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Linux_x64/Playerbots_linux_x64.tar.gz" target="_blank"
                class="download-btn block w-full py-3 px-4 bg-Asia text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
                data-type="linux">
@@ -482,7 +447,6 @@
           </div>
         </div>
 
-        <!-- Map Download -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
           <div class="p-6">
             <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-primary mb-4 mx-auto">
@@ -496,14 +460,12 @@
               <span class="lang-en">General</span>
               <span class="lang-zh">通用</span>
             </p>
-            <!-- 全球节点加速按钮 -->
             <button id="map-download-btn" class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
                     data-type="maps">
               <i class="fa fa-download mr-2"></i> 
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </button>
-            <!-- 亚洲节点加速按钮 -->
             <button id="map-download-alt-btn" class="download-btn block w-full py-3 px-4 bg-Asia text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
                     data-type="maps">
               <i class="fa fa-download mr-2"></i> 
@@ -524,7 +486,6 @@
           </div>
         </div>
     
-        <!-- Database Download -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
           <div class="p-6">
             <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-primary mb-4 mx-auto">
@@ -538,7 +499,6 @@
               <span class="lang-en">MySQL</span>
               <span class="lang-zh">MySQL</span>
             </p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/acore/releases/download/DataBase/DataBase.tar.gz" target="_blank"
                class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
                data-type="database">
@@ -546,7 +506,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/DataBase/DataBase.tar.gz" target="_blank"
                class="download-btn block w-full py-3 px-4 bg-Asia text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
                data-type="database">
@@ -569,7 +528,6 @@
         </div>
       </div>
       
-      <!-- 新增的地区提示 -->
       <div class="mt-10 max-w-6xl mx-auto bg-blue-50 border border-blue-100 rounded-lg p-4 text-center">
         <p class="text-gray-700">
           <span class="lang-en">Choose global nodes for Europe and America, and Asian nodes for Asia.</span>
@@ -579,7 +537,7 @@
     </div>
   </section>
 
-  <!-- Download Statistics Section -->
+  <!-- 下载统计区域保持不变 -->
   <section id="stats" class="py-12 bg-white">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
@@ -599,25 +557,20 @@
     </div>
   </section>
 
-  <!-- Map Download Modal -->
+  <!-- 地图下载模态框保持不变 -->
   <div id="map-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-    <!-- Overlay -->
     <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur fade-in"></div>
     
-    <!-- Modal Content -->
     <div class="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto scale-in mx-4">
-      <!-- 模态框内语言切换按钮 -->
       <div class="absolute top-5 right-14 flex border rounded-md overflow-hidden z-10">
         <button id="modal-lang-en-btn" class="px-3 py-1 text-sm font-medium text-primary bg-white">EN</button>
         <button id="modal-lang-zh-btn" class="px-3 py-1 text-sm font-medium text-gray-600 bg-white">中文</button>
       </div>
       
-      <!-- Close Button -->
       <button id="close-modal" class="absolute top-5 right-5 text-gray-500 hover:text-gray-700 transition-colors z-10" aria-label="Close modal">
         <i class="fa fa-times text-xl"></i>
       </button>
       
-      <!-- Modal Header -->
       <div class="gradient-bg p-8 md:p-10">
         <h3 class="text-2xl md:text-3xl font-bold text-black">
           <span class="lang-en">Map Resources</span>
@@ -629,10 +582,8 @@
         </p>
       </div>
       
-      <!-- Modal Body -->
       <div class="p-8 md:p-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- DBC -->
           <div class="border border-gray-200 rounded-xl p-6 hover-lift">
             <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
               <i class="fa fa-file-code-o text-2xl"></i>
@@ -646,7 +597,6 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="dbc">782</span>
             </p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/dbc.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="dbc">
@@ -654,7 +604,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/dbc.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
                data-type="dbc">
@@ -664,7 +613,6 @@
             </a>
           </div>
           
-          <!-- VMAP -->
           <div class="border border-gray-200 rounded-xl p-6 hover-lift">
             <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
               <i class="fa fa-cubes text-2xl"></i>
@@ -678,7 +626,6 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="vmap">643</span>
             </p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/vmaps.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="vmap">
@@ -686,7 +633,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/vmaps.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
                data-type="vmap">
@@ -696,7 +642,6 @@
             </a>
           </div>
           
-          <!-- MMAPS -->
           <div class="border border-gray-200 rounded-xl p-6 hover-lift">
             <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
               <i class="fa fa-road text-2xl"></i>
@@ -710,7 +655,6 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="mmaps">598</span>
             </p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/mmaps.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="mmaps">
@@ -718,7 +662,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/mmaps.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
                data-type="mmaps">
@@ -728,7 +671,6 @@
             </a>
           </div>
           
-          <!-- Cameras -->
           <div class="border border-gray-200 rounded-xl p-6 hover-lift">
             <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
               <i class="fa fa-video-camera text-2xl"></i>
@@ -742,7 +684,6 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="cameras">421</span>
             </p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/Cameras.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="cameras">
@@ -750,7 +691,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/Cameras.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
                data-type="cameras">
@@ -760,7 +700,6 @@
             </a>
           </div>
           
-          <!-- Maps -->
           <div class="border border-gray-200 rounded-xl p-6 hover-lift">
             <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
               <i class="fa fa-map-o text-2xl"></i>
@@ -774,7 +713,6 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="maps-base">812</span>
             </p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/mapdata/releases/download/MapData/maps.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="maps-base">
@@ -782,7 +720,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/maps.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
                data-type="maps-base">
@@ -792,7 +729,6 @@
             </a>
           </div>
 
-          <!-- All Maps -->
           <div class="border border-gray-200 rounded-xl p-6 hover-lift">
             <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
               <i class="fa fa-compress text-2xl"></i>
@@ -809,7 +745,6 @@
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="runlib">926</span>
             </p>
-            <!-- 全球节点加速按钮 -->
             <a href="https://github.com/game760/acore/releases/download/Runlib/Runlib.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="runlib">
@@ -817,7 +752,6 @@
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <!-- 亚洲节点加速按钮 -->
             <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Runlib/Runlib.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
                data-type="runlib">
@@ -828,7 +762,6 @@
           </div>
         </div>
         
-        <!-- Installation Notes -->
         <div class="mt-10 bg-gray-50 rounded-xl p-6 border border-gray-200">
           <h4 class="font-semibold text-lg mb-3 flex items-center">
             <i class="fa fa-info-circle text-primary mr-2"></i>
@@ -852,7 +785,7 @@
     </div>
   </div>
 
-  <!-- FAQ Section -->
+  <!-- FAQ区域保持不变 -->
   <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
       <div class="text-center mb-12">
@@ -867,7 +800,6 @@
       </div>
       
       <div class="space-y-4">
-        <!-- FAQ Item 1 -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
           <button class="faq-toggle font-medium text-gray-800 hover:text-primary" data-target="faq1">
             <span class="lang-en">How do I install the server?</span>
@@ -882,7 +814,6 @@
           </div>
         </div>
         
-        <!-- FAQ Item 2 -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
           <button class="faq-toggle font-medium text-gray-800 hover:text-primary" data-target="faq2">
             <span class="lang-en">Are the builds updated regularly?</span>
@@ -897,7 +828,6 @@
           </div>
         </div>
         
-        <!-- FAQ Item 3 -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
           <button class="faq-toggle font-medium text-gray-800 hover:text-primary" data-target="faq3">
             <span class="lang-en">What are the system requirements?</span>
@@ -915,7 +845,7 @@
     </div>
   </section>
 
-  <!-- Footer Section -->
+  <!-- 页脚区域保持不变 -->
   <footer class="bg-gray-900 text-white pt-16 pb-8">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
@@ -1045,6 +975,10 @@
       "runlib": 926
     };
 
+    // 配置GitHub PAT（请替换为您自己的PAT）
+    // 注意：在生产环境中，建议通过后端服务转发API请求，而不是直接在前端暴露PAT
+    const GITHUB_PAT = '{{API_GITHUB_TOKEN}}'; // 替换为您的GitHub PAT
+
     // 下载提示函数
     function showDownloadNotice() {
       const isZh = document.body.classList.contains('zh');
@@ -1056,24 +990,16 @@
 
     // 更新下载计数函数
     function updateDownloadCount(type) {
-      // 增加计数
       downloadCounts[type]++;
       
-      // 更新所有相同类型的计数器
       document.querySelectorAll(`.download-count[data-type="${type}"]`).forEach(element => {
-        // 添加动画效果
         element.classList.add('pulse');
-        
-        // 更新数字
         element.textContent = downloadCounts[type];
-        
-        // 移除动画类以允许下次动画
         setTimeout(() => {
           element.classList.remove('pulse');
         }, 500);
       });
       
-      // 更新图表
       updateDownloadChart();
     }
 
@@ -1090,21 +1016,39 @@
       }
     }
 
-    // 获取GitHub仓库统计信息
+    // 使用PAT获取GitHub仓库统计信息，解除API调用次数限制
     async function fetchGitHubRepoStats() {
       const repo = 'azerothcore/azerothcore-wotlk';
       const apiUrl = `https://api.github.com/repos/${repo}`;
       
+      // 配置请求头，添加PAT认证
+      const headers = {
+        'Accept': 'application/vnd.github.v3+json'
+      };
+      
+      // 如果提供了PAT，添加到请求头
+      if (GITHUB_PAT && GITHUB_PAT !== '{{API_GITHUB_TOKEN}}') {
+        headers['Authorization'] = `token ${GITHUB_PAT}`;
+      }
+      
       try {
-        // 尝试获取仓库基本信息
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, { headers });
+        
+        // 检查API响应状态
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          // 处理API限制错误
+          if (response.status === 403) {
+            const resetTime = new Date(response.headers.get('X-RateLimit-Reset') * 1000);
+            console.error(`GitHub API rate limit exceeded. Reset time: ${resetTime.toLocaleTimeString()}`);
+          } else {
+            console.error(`HTTP error! status: ${response.status}`);
+          }
+          throw new Error(`Failed to fetch repo data: ${response.status}`);
         }
         
         const data = await response.json();
         
-        // 更新Stars和Forks计数，并添加加载动画
+        // 更新Stars和Forks计数
         const starsElement = document.getElementById('stars-count');
         starsElement.textContent = data.stargazers_count.toLocaleString();
         starsElement.classList.add('loaded');
@@ -1119,7 +1063,7 @@
         
         // 获取贡献者数量
         const contributorsUrl = `https://api.github.com/repos/${repo}/contributors?per_page=1`;
-        const contributorsResponse = await fetch(contributorsUrl);
+        const contributorsResponse = await fetch(contributorsUrl, { headers });
         
         // 从响应头获取贡献者总数
         const linkHeader = contributorsResponse.headers.get('Link');
@@ -1139,6 +1083,13 @@
         }
         
         contributorsElement.classList.add('loaded');
+        
+        // 显示API调用限制信息（调试用）
+        console.log('GitHub API Rate Limit Info:');
+        console.log('Remaining:', response.headers.get('X-RateLimit-Remaining'));
+        console.log('Limit:', response.headers.get('X-RateLimit-Limit'));
+        console.log('Reset Time:', new Date(parseInt(response.headers.get('X-RateLimit-Reset')) * 1000).toLocaleString());
+        
       } catch (error) {
         console.error('Error fetching GitHub repo stats:', error);
         // 显示错误状态
@@ -1160,10 +1111,8 @@
         body.classList.remove('zh');
       }
       
-      // 同步所有语言切换按钮样式
       syncLangBtnStyles(isZh);
       
-      // 同步图表提示文本
       if (window.downloadsChart) {
         window.downloadsChart.data.datasets[0].label = isZh ? '下载量' : 'Downloads';
         window.downloadsChart.options.scales.y.title.text = isZh ? '下载次数' : 'Download Count';
@@ -1177,7 +1126,6 @@
 
     // 同步语言按钮样式
     function syncLangBtnStyles(isZh) {
-      // 桌面端按钮
       const enBtn = document.getElementById('lang-en-btn');
       const zhBtn = document.getElementById('lang-zh-btn');
       if (enBtn && zhBtn) {
@@ -1189,7 +1137,6 @@
           : 'px-3 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-blue-50 transition-colors';
       }
 
-      // 移动端按钮
       const mobileEnBtn = document.getElementById('mobile-lang-en-btn');
       const mobileZhBtn = document.getElementById('mobile-lang-zh-btn');
       if (mobileEnBtn && mobileZhBtn) {
@@ -1201,7 +1148,6 @@
           : 'px-3 py-1 text-sm font-medium text-gray-600 bg-white';
       }
 
-      // 模态框按钮
       const modalEnBtn = document.getElementById('modal-lang-en-btn');
       const modalZhBtn = document.getElementById('modal-lang-zh-btn');
       if (modalEnBtn && modalZhBtn) {
@@ -1224,14 +1170,12 @@
     function openMapModal() {
       const modal = document.getElementById('map-modal');
       modal.classList.remove('hidden');
-      // 阻止页面滚动
       document.body.style.overflow = 'hidden';
     }
 
     function closeMapModal() {
       const modal = document.getElementById('map-modal');
       modal.classList.add('hidden');
-      // 恢复页面滚动
       document.body.style.overflow = '';
     }
 
@@ -1244,7 +1188,6 @@
           const content = document.getElementById(targetId);
           const icon = toggle.querySelector('i');
           
-          // 切换当前FAQ项
           content.classList.toggle('hidden');
           icon.classList.toggle('rotate-180');
         });
@@ -1274,20 +1217,15 @@
       const downloadButtons = document.querySelectorAll('.download-btn');
       downloadButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-          // 获取下载类型
           const downloadType = this.getAttribute('data-type');
           
-          // 如果是地图按钮，先打开弹窗
           if (downloadType === 'maps' && (this.id === 'map-download-btn' || this.id === 'map-download-alt-btn')) {
             e.preventDefault();
             openMapModal();
             return;
           }
           
-          // 更新下载计数
           updateDownloadCount(downloadType);
-          
-          // 显示下载提示
           showDownloadNotice();
         });
       });
@@ -1295,6 +1233,11 @@
 
     // 页面加载完成后初始化
     document.addEventListener('DOMContentLoaded', function() {
+      // 检查PAT是否已配置
+      if (GITHUB_PAT === 'your_github_pat_here') {
+        console.warn('请配置GitHub PAT以解除API调用限制。前往https://github.com/settings/tokens创建一个具有public_repo权限的PAT。');
+      }
+      
       // 加载GitHub仓库统计信息
       fetchGitHubRepoStats();
       
@@ -1370,13 +1313,11 @@
       document.getElementById('map-download-btn')?.addEventListener('click', openMapModal);
       document.getElementById('map-download-alt-btn')?.addEventListener('click', openMapModal);
       document.getElementById('close-modal')?.addEventListener('click', closeMapModal);
-      // 点击遮罩关闭弹窗
       document.getElementById('map-modal')?.addEventListener('click', (e) => {
         if (e.target === document.getElementById('map-modal')) {
           closeMapModal();
         }
       });
-      // ESC键关闭弹窗
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !document.getElementById('map-modal').classList.contains('hidden')) {
           closeMapModal();
