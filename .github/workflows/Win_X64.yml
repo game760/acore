@@ -1,0 +1,116 @@
+name: Win_x64
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 16 * * *"
+    
+jobs:
+  build:
+   runs-on: windows-2025
+   permissions:
+     contents: write
+   env:
+      AC_REPO: 'mod-playerbots/azerothcore-wotlk'
+      AC_BRANCH: 'Playerbot'
+      AC_MODULES: 'https://github.com/mod-playerbots/mod-playerbots.git;master|https://github.com/azerothcore/mod-ale.git;master'
+      BUILD_DIR: ${{ github.workspace }}\build
+      BOOST_INSTALL_DIR: D:\boost\boost_1_89_0
+      BOOST_DOWNLOAD_URL: https://archives.boost.io/release/1.89.0/binaries/boost_1_89_0-msvc-14.3-64.exe
+      
+   steps:
+      - name: 克隆源码
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.AC_REPO }}
+          ref: ${{ env.AC_BRANCH }}
+          submodules: 'recursive'
+
+      - name: 克隆/更新模块
+        if: env.AC_MODULES != ''
+        run: |
+          $moduleList = $env:AC_MODULES -split '\|'
+          foreach ($module in $moduleList) {
+            $parts = $module -split ';'
+            $repoUrl = $parts[0]
+            $branch = if ($parts.Count -ge 2) { $parts[1] } else { 'master' }
+            
+            $moduleName = ($repoUrl -split '/' | Select-Object -Last 1) -replace '\.git$', ''
+            $modulePath = "${{ github.workspace }}\modules\$moduleName"
+            
+            if (Test-Path $modulePath) {
+              Write-Host "更新模块: $moduleName (分支: $branch)"
+              cd $modulePath
+              git checkout $branch
+              git pull origin $branch
+            } else {
+              Write-Host "克隆模块: $moduleName (分支: $branch)"
+              git clone -b $branch $repoUrl $modulePath
+            }
+          }
+        shell: pwsh
+        
+      - name: 获取时间
+        id: ts
+        run: |
+           echo "utctime=$((Get-Date).ToUniversalTime().AddHours(8).ToString('yyyy-MM-dd_HH:mm'))" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+        
+      - name: 安装Boost
+        run: |
+          New-Item -Path "D:\temp" -ItemType Directory -Force | Out-Null
+          $installerPath = "D:\temp\boost_installer.exe"
+          Invoke-WebRequest -Uri "${{ env.BOOST_DOWNLOAD_URL }}" -OutFile $installerPath -UseBasicParsing
+          Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT /DIR=`"${{ env.BOOST_INSTALL_DIR }}`"" -Wait -NoNewWindow
+          echo "BOOST_ROOT=${{ env.BOOST_INSTALL_DIR }}".Replace('\', '/') | Out-File -FilePath $env:GITHUB_ENV -Append
+        shell: pwsh
+
+      - name: 配置CMake
+        run: |
+          if (-not (Test-Path "${{ env.BUILD_DIR }}")) {
+            New-Item -Path "${{ env.BUILD_DIR }}" -ItemType Directory -Force | Out-Null
+          }
+          cd "${{ env.BUILD_DIR }}"
+          cmake "${{ github.workspace }}" `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            -DBOOST_ROOT="${{ env.BOOST_ROOT }}" `
+            -DTOOLS=1 `
+            -DSCRIPTS=static
+        shell: pwsh
+        
+      - name: 配置MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: 编译项目
+        run: |
+          cd "${{ env.BUILD_DIR }}"
+          msbuild AzerothCore.sln /p:Configuration=Release /p:Platform=x64 /m /p:BuildInParallel=true
+        shell: pwsh
+        
+      - name: 打包文件
+        run: |
+          & "C:\Program Files\7-Zip\7z.exe" a -tzip Playerbots_Win_x64.zip "${{ env.BUILD_DIR }}\bin\Release\*" -mx=5
+        shell: pwsh
+        
+      - name: 上传文件
+        uses: actions/upload-artifact@v4
+        with:
+          name: Playerbots_Win_x64
+          path: Playerbots_Win_x64.zip
+          if-no-files-found: warn
+          retention-days: 3
+          
+      - name: 上传Release
+        uses: ncipollo/release-action@v1
+        with:
+           tag: "Win_X64"
+           name: "Playerbots_Win_X64"
+           body: |
+                 ### ${{ steps.ts.outputs.utctime }}
+           artifacts: Playerbots_Win_x64.zip
+           allowUpdates: true
+           replaceArtifacts: true
+           draft: false
+           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.BUILD_AZEROTHCORE }}

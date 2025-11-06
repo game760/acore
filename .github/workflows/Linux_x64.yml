@@ -1,0 +1,116 @@
+name: Linux_x64
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 16 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      
+    env:
+      BUILD_DIR: ./build
+      INSTALL_DIR: ./install
+      MODULES_DIR: ./modules
+      ACORE_REPO: "https://github.com/mod-playerbots/azerothcore-wotlk.git"
+      ACORE_BRANCH: "Playerbot"
+      BUILD_TYPE: "Release"
+      MODULES_INPUT: |
+        https://github.com/mod-playerbots/mod-playerbots.git master
+        https://github.com/azerothcore/mod-ale.git master
+        
+    steps:
+      - name: 安装系统依赖
+        run: |
+          sudo apt update -y
+          sudo apt install -y \
+            git cmake make gcc g++ clang \
+            libssl-dev libbz2-dev libreadline-dev libncurses-dev \
+            libboost-all-dev
+          sudo apt clean && sudo rm -rf /var/lib/apt/lists/*
+          
+      - name: 生成构建时间戳
+        id: ts
+        run: |
+          echo "utcs=$(TZ=Asia/Shanghai date +%Y-%m-%d_%H:%M)" >> $GITHUB_OUTPUT
+
+      - name: 克隆 AzerothCore 仓库
+        run: |
+          git clone --depth 1 \
+            --branch "${{ env.ACORE_BRANCH }}" \
+            "${{ env.ACORE_REPO }}" .
+          git submodule update --init --recursive --depth 1
+
+      - name: 拉取模块
+        id: modules
+        run: |
+          mkdir -p "${{ env.MODULES_DIR }}"
+          success=()
+          failure=()
+          
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            repo=$(echo "$line" | awk '{print $1}')
+            branch=$(echo "$line" | awk '{print $2}')
+            name=$(basename "$repo" .git)
+            
+            if git clone --depth 1 \
+                --branch "$branch" \
+                "$repo" "${{ env.MODULES_DIR }}/$name"; then
+              success+=("$name（$branch）")
+            else
+              failure+=("$name（$branch）")
+              echo "⚠️ 模块 $name 克隆失败，将继续构建"
+            fi
+          done <<< "${{ env.MODULES_INPUT }}"
+          
+          echo "success=$(IFS=';'; echo "${success[*]}")" >> $GITHUB_OUTPUT
+          echo "failure=$(IFS=';'; echo "${failure[*]}")" >> $GITHUB_OUTPUT
+
+      - name: 配置与编译
+        run: |
+          mkdir -p "${{ env.BUILD_DIR }}" && cd "${{ env.BUILD_DIR }}"
+          
+          cmake .. \
+            -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" \
+            -DCMAKE_INSTALL_PREFIX="${{ env.INSTALL_DIR }}" \
+            -DCMAKE_C_COMPILER=clang \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DWITH_WARNINGS=0 \
+            -DTOOLS_BUILD=all \
+            -DSCRIPTS=static \
+            -DMODULES=static
+          
+          make -j$(nproc) && make install
+
+      - name: 打包构建产物
+        id: package
+        run: |
+          tar -czvf "Playerbots_linux_x64.tar.gz" \
+            -C /home/runner/work/acore/acore/build/install .
+
+      - name: 上传临时产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: Playerbots_Linux-x64
+          path: Playerbots_linux_x64.tar.gz
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: 发布 Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: "Linux_x64"
+          name: "Playerbots_Linux_x64"
+          body: |
+            ### build data：${{ steps.ts.outputs.utcs }}
+          artifacts: Playerbots_linux_x64.tar.gz
+          allowUpdates: true
+          replaceArtifacts: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.BUILD_AZEROTHCORE }}

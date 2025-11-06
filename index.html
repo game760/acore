@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AzerothCore Download</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* 原有样式保持不变 */
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .scale-in {
+      animation: scaleIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .backdrop-blur {
+        backdrop-filter: blur(8px);
+      }
+    }
+
+    .lang-zh {
+      display: none;
+    }
+    body.zh .lang-en {
+      display: none;
+    }
+    body.zh .lang-zh {
+      display: inline;
+    }
+
+    body {
+      @apply bg-gray-50 font-sans text-gray-800;
+    }
+
+    #navbar {
+      @apply sticky top-0 z-50 bg-white shadow-md transition-all duration-300;
+    }
+
+    #mobile-menu {
+      @apply md:hidden hidden;
+    }
+
+    .wotlk-banner-bg {
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      color: white;
+      padding: 4rem 0;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #downloads {
+      @apply py-16 bg-gray-50;
+    }
+
+    #stats {
+      @apply py-12 bg-white;
+    }
+
+    #map-modal {
+      @apply fixed inset-0 z-50 flex items-center justify-center hidden;
+    }
+
+    #map-modal .relative {
+      @apply bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto scale-in mx-4;
+    }
+
+    #downloadsChart {
+      @apply h-64;
+    }
+
+    .repo-stats {
+      @apply py-16 bg-gradient-to-r from-blue-50 to-indigo-50;
+    }
+    
+    .stat-card {
+      @apply bg-white rounded-2xl shadow-md p-8 text-center hover-lift border border-gray-100;
+    }
+
+    .stat-number {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stat-number.loaded {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .faq-toggle {
+      @apply w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none;
+    }
+
+    .faq-content {
+      @apply px-6 pb-4 hidden;
+    }
+
+    footer {
+      @apply bg-gray-900 text-white py-10;
+    }
+
+    footer .border-t {
+      @apply border-gray-700 mt-12 pt-8 text-center text-gray-500;
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .download-count {
+      transition: all 0.3s ease;
+    }
+    .download-count.pulse {
+      animation: pulse 0.5s ease;
+      color: #2563eb;
+      font-weight: bold;
+    }
+  </style>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563eb',
+            secondary: '#1e40af',
+            dark: '#1e293b',
+            light: '#f8fafc',
+            accent: '#3b82f6',
+            Asia: '#10b981'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800" zh>
+  <!-- 导航栏部分保持不变 -->
+  <header class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-2">
+          <i class="fa fa-github text-2xl text-gray-800"></i>
+          <span class="text-xl font-bold text-primary">AzerothCore</span>
+        </div>
+        
+        <nav class="hidden md:flex space-x-8">
+          <a href="#" class="text-primary font-medium hover:text-secondary transition-colors">
+            <span class="lang-en">Download</span>
+            <span class="lang-zh">下载</span>
+          </a>
+          <a href="https://www.azerothcore.org/wiki/documentation-index" target="_blank" class="text-gray-600 hover:text-primary transition-colors">
+            <span class="lang-en">Docs</span>
+            <span class="lang-zh">文档</span>
+          </a>
+          <a href="https://github.com/azerothcore/azerothcore-wotlk" target="_blank" class="text-gray-600 hover:text-primary transition-colors">
+            <span class="lang-en">GitHub</span>
+            <span class="lang-zh">仓库</span>
+          </a>
+            <a href="status.html" target="_blank" class="text-gray-600 hover:text-primary transition-colors">
+            <span class="lang-en">Status</span>
+            <span class="lang-zh">状态</span>
+          </a>
+          <a href="https://discord.com/invite/gkt4y2x" target="_blank" class="text-gray-600 hover:text-primary transition-colors"">
+            <span class="lang-en">Support</span>
+            <span class="lang-zh">支持</span>
+          </a>
+        </nav>
+        
+        <div class="flex items-center space-x-4">
+          <div class="hidden md:flex items-center border rounded-md overflow-hidden">
+            <button id="lang-en-btn" class="px-3 py-2 text-sm font-medium text-primary bg-white hover:bg-blue-50 transition-colors">EN</button>
+            <button id="lang-zh-btn" class="px-3 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-blue-50 transition-colors">中文</button>
+          </div>
+          
+          <button class="md:hidden text-gray-600 hover:text-primary" id="mobile-menu-button" aria-label="Toggle menu">
+            <i class="fa fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="md:hidden hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div class="flex items-center justify-between p-3 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-500">
+              <span class="lang-en">Language</span>
+              <span class="lang-zh">语言</span>
+            </span>
+            <div class="flex border rounded-md overflow-hidden">
+              <button id="mobile-lang-en-btn" class="px-3 py-1 text-sm font-medium text-primary bg-white">EN</button>
+              <button id="mobile-lang-zh-btn" class="px-3 py-1 text-sm font-medium text-gray-600 bg-white">中文</button>
+            </div>
+          </div>
+          
+          <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-primary bg-blue-50">
+            <span class="lang-en">Download</span>
+            <span class="lang-zh">下载</span>
+          </a>
+          <a href="https://www.azerothcore.org/wiki/documentation-index" target="_blank" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-blue-50">
+            <span class="lang-en">Docs</span>
+            <span class="lang-zh">文档</span>
+          </a>
+          <a href="https://github.com/game760/ACore" target="_blank" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-blue-50">
+            <span class="lang-en">GitHub</span>
+            <span class="lang-zh">仓库</span>
+          </a>
+          <a href="status.html" target="_blank" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-blue-50">
+            <span class="lang-en">Status</span>
+            <span class="lang-zh">状态</span>
+          </a>
+          <a href="https://discord.com/invite/gkt4y2x" target="_blank" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-blue-50">
+            <span class="lang-en">Support</span>
+            <span class="lang-zh">支持</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner区域保持不变 -->
+  <section class="wotlk-banner-bg text-white py-16 md:py-24">
+    <div class="absolute top-20 left-10 md:left-20 w-32 h-32 md:w-48 md:h-48 rounded-full bg-white/10 blur-2xl"></div>
+    <div class="absolute bottom-20 right-10 md:right-20 w-24 h-24 md:w-36 md:h-36 rounded-full bg-white/10 blur-2xl"></div>
+    
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <span class="lang-en">AzerothCore-Wotlk</span>
+          <span class="lang-zh">艾泽拉斯核心-巫妖王之怒</span>
+        </h1>
+        <p class="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+          <span class="lang-en">Open-source WotLK Server with Playerbots. Download precompiled builds.</span>
+          <span class="lang-zh">带玩家机器人的开源巫妖王之怒服务器。下载预编译版本，即刻开始体验。</span>
+        </p>
+        <a href="#downloads" class="inline-flex items-center px-8 py-3.5 bg-white text-primary rounded-lg font-semibold hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl">
+          <span class="lang-en">Get Started</span>
+          <span class="lang-zh">立即开始</span>
+          <i class="fa fa-arrow-down ml-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 仓库统计区域保持不变 -->
+  <section class="repo-stats py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">
+          <span class="lang-en">Repository Statistics</span>
+          <span class="lang-zh">仓库统计信息</span>
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+          <span class="lang-en">Current metrics for the AzerothCore repository on GitHub</span>
+          <span class="lang-zh">GitHub上AzerothCore仓库的当前数据指标</span>
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+        <div class="stat-card flex flex-col items-center justify-between">
+          <div class="text-center mb-6">
+            <div class="flex items-center justify-center h-20 w-20 rounded-full bg-yellow-100 text-yellow-500 mb-4 mx-auto">
+              <i class="fa fa-star text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700">
+              <span class="lang-en">Stars</span>
+              <span class="lang-zh">星标数</span>
+            </h3>
+          </div>
+          <p class="text-4xl font-bold text-gray-800 stat-number" id="stars-count">
+            <i class="fa fa-spinner fa-spin text-gray-400"></i>
+          </p>
+        </div>
+        
+        <div class="stat-card flex flex-col items-center justify-between">
+          <div class="text-center mb-6">
+            <div class="flex items-center justify-center h-20 w-20 rounded-full bg-green-100 text-green-500 mb-4 mx-auto">
+              <i class="fa fa-code-fork text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700">
+              <span class="lang-en">Forks</span>
+              <span class="lang-zh">分支数</span>
+            </h3>
+          </div>
+          <p class="text-4xl font-bold text-gray-800 stat-number" id="forks-count">
+            <i class="fa fa-spinner fa-spin text-gray-400"></i>
+          </p>
+        </div>
+        
+        <div class="stat-card flex flex-col items-center justify-between">
+          <div class="text-center mb-6">
+            <div class="flex items-center justify-center h-20 w-20 rounded-full bg-red-100 text-red-500 mb-4 mx-auto">
+              <i class="fa fa-exclamation-triangle text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700">
+              <span class="lang-en">Open Issues</span>
+              <span class="lang-zh">开放问题</span>
+            </h3>
+          </div>
+          <p class="text-4xl font-bold text-gray-800 stat-number" id="issues-count">
+            <i class="fa fa-spinner fa-spin text-gray-400"></i>
+          </p>
+        </div>
+        
+        <div class="stat-card flex flex-col items-center justify-between">
+          <div class="text-center mb-6">
+            <div class="flex items-center justify-center h-20 w-20 rounded-full bg-purple-100 text-purple-500 mb-4 mx-auto">
+              <i class="fa fa-users text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700">
+              <span class="lang-en">Contributors</span>
+              <span class="lang-zh">贡献者</span>
+            </h3>
+          </div>
+          <p class="text-4xl font-bold text-gray-800 stat-number" id="contributors-count">
+            <i class="fa fa-spinner fa-spin text-gray-400"></i>
+          </p>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="https://github.com/azerothcore/azerothcore-wotlk" target="_blank" 
+           class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-all shadow-md hover:shadow-lg">
+          <i class="fa fa-github mr-2 text-xl"></i>
+          <span class="lang-en">View on GitHub</span>
+          <span class="lang-zh">在GitHub上查看</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 下载区域保持不变 -->
+  <section id="downloads" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">
+          <span class="lang-en">Downloads</span>
+          <span class="lang-zh">下载列表</span>
+        </h2>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+  
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
+          <div class="p-6">
+            <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-primary mb-4 mx-auto">
+              <i class="fa fa-windows text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-center mb-2">Windows</h3>
+            <p class="text-gray-600 text-center mb-6">x64</p>
+            <a href="https://github.com/game760/acore/releases/download/Win_X64/Playerbots_Win_x64.zip" target="_blank" 
+               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
+               data-type="windows">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Win_X64/Playerbots_Win_x64.zip" target="_blank"
+               class="download-btn block w-full py-3 px-4 bg-Asia text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
+               data-type="windows">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+            <div class="mt-4 text-center text-sm text-gray-500">
+              <span class="mr-4">
+                <i class="fa fa-clock-o text-blue-500 mr-1"></i> 
+                <span class="lang-en">Daily Build</span>
+                <span class="lang-zh">每日构建</span>
+              </span>
+              <span>
+                <i class="fa fa-download text-green-500 mr-1"></i> 
+                <span class="download-count" data-type="windows">1233</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
+          <div class="p-6">
+            <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-primary mb-4 mx-auto">
+              <i class="fa fa-linux text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-center mb-2">Linux</h3>
+            <p class="text-gray-600 text-center mb-6">x64</p>
+            <a href="https://github.com/game760/acore/releases/download/Linux_x64/Playerbots_linux_x64.tar.gz" target="_blank"
+               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
+               data-type="linux">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Linux_x64/Playerbots_linux_x64.tar.gz" target="_blank"
+               class="download-btn block w-full py-3 px-4 bg-Asia text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
+               data-type="linux">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+            <div class="mt-4 text-center text-sm text-gray-500">
+              <span class="mr-4">
+                <i class="fa fa-clock-o text-blue-500 mr-1"></i> 
+                <span class="lang-en">Daily Build</span>
+                <span class="lang-zh">每日构建</span>
+              </span>
+              <span>
+                <i class="fa fa-download text-green-500 mr-1"></i> 
+                <span class="download-count" data-type="linux">857</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
+          <div class="p-6">
+            <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-primary mb-4 mx-auto">
+              <i class="fa fa-map text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-center mb-2">
+              <span class="lang-en">Map</span>
+              <span class="lang-zh">地图数据</span>
+            </h3>
+            <p class="text-gray-600 text-center mb-6">
+              <span class="lang-en">General</span>
+              <span class="lang-zh">通用</span>
+            </p>
+            <button id="map-download-btn" class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
+                    data-type="maps">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </button>
+            <button id="map-download-alt-btn" class="download-btn block w-full py-3 px-4 bg-Asia text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
+                    data-type="maps">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </button>
+            <div class="mt-4 text-center text-sm text-gray-500">
+              <span class="mr-4">
+                <i class="fa fa-check-circle text-green-500 mr-1"></i> 
+                <span class="lang-en">Required</span>
+                <span class="lang-zh">必需文件</span>
+              </span>
+              <span>
+                <i class="fa fa-download text-green-500 mr-1"></i> 
+                <span class="download-count" data-type="maps">1026</span>
+              </span>
+            </div>
+          </div>
+        </div>
+    
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
+          <div class="p-6">
+            <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-primary mb-4 mx-auto">
+              <i class="fa fa-database text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-center mb-2">
+              <span class="lang-en">Database</span>
+              <span class="lang-zh">数据库</span>
+            </h3>
+            <p class="text-gray-600 text-center mb-6">
+              <span class="lang-en">MySQL</span>
+              <span class="lang-zh">MySQL</span>
+            </p>
+            <a href="https://github.com/game760/acore/releases/download/DataBase/DataBase.tar.gz" target="_blank"
+               class="download-btn block w-full py-3 px-4 bg-primary text-white rounded-lg text-center font-medium hover:bg-secondary transition-colors mb-3"
+               data-type="database">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/DataBase/DataBase.tar.gz" target="_blank"
+               class="download-btn block w-full py-3 px-4 bg-Asia text-white rounded-lg text-center font-medium hover:bg-green-600 transition-colors"
+               data-type="database">
+              <i class="fa fa-download mr-2"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+            <div class="mt-4 text-center text-sm text-gray-500">
+              <span class="mr-4">
+                <i class="fa fa-check-circle text-green-500 mr-1"></i> 
+                <span class="lang-en">Required</span>
+                <span class="lang-zh">必需文件</span>
+              </span>
+              <span>
+                <i class="fa fa-download text-green-500 mr-1"></i> 
+                <span class="download-count" data-type="database">1352</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-10 max-w-6xl mx-auto bg-blue-50 border border-blue-100 rounded-lg p-4 text-center">
+        <p class="text-gray-700">
+          <span class="lang-en">Choose global nodes for Europe and America, and Asian nodes for Asia.</span>
+          <span class="lang-zh">欧美地区选择全球节点，亚洲地区选择亚洲节点。</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 下载统计区域保持不变 -->
+  <section id="stats" class="py-12 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold mb-2">
+          <span class="lang-en">Download Statistics</span>
+          <span class="lang-zh">下载统计</span>
+        </h2>
+        <p class="text-gray-600">
+          <span class="lang-en">Popularity of different download packages</span>
+          <span class="lang-zh">各下载包的受欢迎程度</span>
+        </p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6">
+        <canvas id="downloadsChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 地图下载模态框保持不变 -->
+  <div id="map-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur fade-in"></div>
+    
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto scale-in mx-4">
+      <div class="absolute top-5 right-14 flex border rounded-md overflow-hidden z-10">
+        <button id="modal-lang-en-btn" class="px-3 py-1 text-sm font-medium text-primary bg-white">EN</button>
+        <button id="modal-lang-zh-btn" class="px-3 py-1 text-sm font-medium text-gray-600 bg-white">中文</button>
+      </div>
+      
+      <button id="close-modal" class="absolute top-5 right-5 text-gray-500 hover:text-gray-700 transition-colors z-10" aria-label="Close modal">
+        <i class="fa fa-times text-xl"></i>
+      </button>
+      
+      <div class="gradient-bg p-8 md:p-10">
+        <h3 class="text-2xl md:text-3xl font-bold text-black">
+          <span class="lang-en">Map Resources</span>
+          <span class="lang-zh">地图资源文件</span>
+        </h3>
+        <p class="text-blue-100 mt-2">
+          <span class="lang-en text-black">Download the necessary map components for your server</span>
+          <span class="lang-zh text-black">下载服务器所需的地图组件</span>
+        </p>
+      </div>
+      
+      <div class="p-8 md:p-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
+            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
+              <i class="fa fa-file-code-o text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-center mb-3">dbc</h4>
+            <p class="text-gray-600 text-center text-sm mb-3">
+              <span class="lang-en">Database client files containing game data</span>
+              <span class="lang-zh">包含游戏数据的数据库客户端文件</span>
+            </p>
+            <p class="text-gray-500 text-center text-xs mb-3">
+              <i class="fa fa-download text-green-500 mr-1"></i> 
+              <span class="download-count" data-type="dbc">782</span>
+            </p>
+            <a href="https://github.com/game760/mapdata/releases/download/MapData/dbc.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
+               data-type="dbc">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/dbc.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="dbc">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+          </div>
+          
+          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
+            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
+              <i class="fa fa-cubes text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-center mb-3">vmap</h4>
+            <p class="text-gray-600 text-center text-sm mb-3">
+              <span class="lang-en">Visibility maps for line of sight calculations</span>
+              <span class="lang-zh">用于视线计算的可见性地图</span>
+            </p>
+            <p class="text-gray-500 text-center text-xs mb-3">
+              <i class="fa fa-download text-green-500 mr-1"></i> 
+              <span class="download-count" data-type="vmap">643</span>
+            </p>
+            <a href="https://github.com/game760/mapdata/releases/download/MapData/vmaps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
+               data-type="vmap">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/vmaps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="vmap">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+          </div>
+          
+          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
+            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
+              <i class="fa fa-road text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-center mb-3">mmaps</h4>
+            <p class="text-gray-600 text-center text-sm mb-3">
+              <span class="lang-en">Movement maps for creature navigation</span>
+              <span class="lang-zh">用于生物导航的移动地图</span>
+            </p>
+            <p class="text-gray-500 text-center text-xs mb-3">
+              <i class="fa fa-download text-green-500 mr-1"></i> 
+              <span class="download-count" data-type="mmaps">598</span>
+            </p>
+            <a href="https://github.com/game760/mapdata/releases/download/MapData/mmaps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
+               data-type="mmaps">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/mmaps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="mmaps">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+          </div>
+          
+          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
+            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
+              <i class="fa fa-video-camera text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-center mb-3">Cameras</h4>
+            <p class="text-gray-600 text-center text-sm mb-3">
+              <span class="lang-en">Camera position data for in-game views</span>
+              <span class="lang-zh">用于游戏内视图的相机位置数据</span>
+            </p>
+            <p class="text-gray-500 text-center text-xs mb-3">
+              <i class="fa fa-download text-green-500 mr-1"></i> 
+              <span class="download-count" data-type="cameras">421</span>
+            </p>
+            <a href="https://github.com/game760/mapdata/releases/download/MapData/Cameras.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
+               data-type="cameras">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/Cameras.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="cameras">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+          </div>
+          
+          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
+            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
+              <i class="fa fa-map-o text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-center mb-3">Maps</h4>
+            <p class="text-gray-600 text-center text-sm mb-3">
+              <span class="lang-en">Base map files for world geometry</span>
+              <span class="lang-zh">用于世界几何的基础地图文件</span>
+            </p>
+            <p class="text-gray-500 text-center text-xs mb-3">
+              <i class="fa fa-download text-green-500 mr-1"></i> 
+              <span class="download-count" data-type="maps-base">812</span>
+            </p>
+            <a href="https://github.com/game760/mapdata/releases/download/MapData/maps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
+               data-type="maps-base">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/maps.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="maps-base">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+          </div>
+
+          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
+            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
+              <i class="fa fa-compress text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-center mb-3">
+              <span class="lang-en">windows x64 Runtime Library</span>
+              <span class="lang-zh">windows x64  运行库</span>
+            </h4>
+            <p class="text-gray-600 text-center text-sm mb-3">
+              <span class="lang-en">The runtime compressed file required for game runtime</span>
+              <span class="lang-zh">win系统核心运行时所需的运行库压缩包</span>
+            </p>
+            <p class="text-gray-500 text-center text-xs mb-3">
+              <i class="fa fa-download text-green-500 mr-1"></i> 
+              <span class="download-count" data-type="runlib">926</span>
+            </p>
+            <a href="https://github.com/game760/acore/releases/download/Runlib/Runlib.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
+               data-type="runlib">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Runlib/Runlib.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="runlib">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mt-10 bg-gray-50 rounded-xl p-6 border border-gray-200">
+          <h4 class="font-semibold text-lg mb-3 flex items-center">
+            <i class="fa fa-info-circle text-primary mr-2"></i>
+            <span class="lang-en">Installation Notes</span>
+            <span class="lang-zh">安装说明</span>
+          </h4>
+          <ul class="text-gray-600 space-y-2 text-sm">
+            <li class="flex items-start">
+              <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+              <span class="lang-en">Download the runtime library and unzip it to the directory where the server program is located</span>
+              <span class="lang-zh">下载运行库解压到服务器执行文件所在目录</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+              <span class="lang-en">Extract all map files to your server's "data" directory</span>
+              <span class="lang-zh">下载所有地图文件解压到服务器执行文件所在目录</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ区域保持不变 -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">
+          <span class="lang-en">Frequently Asked Questions</span>
+          <span class="lang-zh">常见问题</span>
+        </h2>
+        <p class="text-gray-600">
+          <span class="lang-en">Find answers to common questions about our downloads</span>
+          <span class="lang-zh">查找关于下载的常见问题答案</span>
+        </p>
+      </div>
+      
+      <div class="space-y-4">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <button class="faq-toggle font-medium text-gray-800 hover:text-primary" data-target="faq1">
+            <span class="lang-en">How do I install the server?</span>
+            <span class="lang-zh">如何安装服务器？</span>
+            <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+          </button>
+          <div id="faq1" class="faq-content">
+            <p class="text-gray-600">
+              <span class="lang-en">1. Download the server package for your operating system.<br>2. Download and extract the database and map files.<br>3. Follow the setup instructions in our documentation (coming soon).</span>
+              <span class="lang-zh">1. 下载适用于您操作系统的服务器包。<br>2. 下载并解压数据库和地图文件。<br>3. 按照我们文档中的设置说明进行操作（即将推出）。</span>
+            </p>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <button class="faq-toggle font-medium text-gray-800 hover:text-primary" data-target="faq2">
+            <span class="lang-en">Are the builds updated regularly?</span>
+            <span class="lang-zh">构建版本会定期更新吗？</span>
+            <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+          </button>
+          <div id="faq2" class="faq-content">
+            <p class="text-gray-600">
+              <span class="lang-en">Yes, we provide daily builds with the latest changes from the AzerothCore project, including playerbot updates.</span>
+              <span class="lang-zh">是的，我们提供每日构建版本，包含AzerothCore项目的最新更改，包括玩家机器人的更新。</span>
+            </p>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <button class="faq-toggle font-medium text-gray-800 hover:text-primary" data-target="faq3">
+            <span class="lang-en">What are the system requirements?</span>
+            <span class="lang-zh">系统要求是什么？</span>
+            <i class="fa fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+          </button>
+          <div id="faq3" class="faq-content">
+            <p class="text-gray-600">
+              <span class="lang-en">Minimum: 4GB RAM, multi-core processor, 20GB free disk space.<br>Recommended: 8GB+ RAM, quad-core processor, SSD storage.</span>
+              <span class="lang-zh">最低要求：4GB内存，多核处理器，20GB可用磁盘空间。<br>推荐配置：8GB以上内存，四核处理器，SSD存储。</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚区域保持不变 -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div>
+          <div class="flex items-center space-x-2 mb-6">
+            <i class="fa fa-github text-2xl text-white"></i>
+            <span class="text-xl font-bold text-white">game760</span>
+          </div>
+          <p class="text-gray-400 mb-6">
+            <span class="lang-en">Providing precompiled AzerothCore-Wotlk builds with playerbot support.</span>
+            <span class="lang-zh">提供带有玩家机器人支持的预编译AzerothCore-Wotlk版本。</span>
+          </p>
+          <div class="flex space-x-4">
+            <a href="https://github.com/game760/acore" target="_blank" class="text-gray-400 hover:text-white transition-colors" aria-label="GitHub">
+              <i class="fa fa-github text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="Discord">
+              <i class="fa fa-discord text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="Email">
+              <i class="fa fa-envelope text-xl"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">
+            <span class="lang-en">Resources</span>
+            <span class="lang-zh">资源</span>
+          </h3>
+          <ul class="space-y-3">
+            <li><a href="https://www.azerothcore.org/wiki/documentation-index" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">Documentation</span>
+              <span class="lang-zh">文档</span>
+            </a></li>
+            <li><a href="https://www.azerothcore.org/wiki/installation" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">Tutorials</span>
+              <span class="lang-zh">教程</span>
+            </a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">API Reference</span>
+              <span class="lang-zh">API参考</span>
+            </a></li>
+            <li><a href="https://github.com/azerothcore/azerothcore-wotlk/discussions" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">Community</span>
+              <span class="lang-zh">社区</span>
+            </a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">
+            <span class="lang-en">Project</span>
+            <span class="lang-zh">项目</span>
+          </h3>
+          <ul class="space-y-3">
+            <li><a href="https://github.com/azerothcore/azerothcore-wotlk" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">GitHub</span>
+              <span class="lang-zh">代码仓库</span>
+            </a></li>
+            <li><a href="https://github.com/azerothcore/azerothcore-wotlk/issues" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">Issues</span>
+              <span class="lang-zh">问题反馈</span>
+            </a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">
+            <span class="lang-en">Legal</span>
+            <span class="lang-zh">法律信息</span>
+          </h3>
+          <ul class="space-y-3">
+            <li><a href="https://www.gnu.org/licenses/agpl-3.0.en.html" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">License</span>
+              <span class="lang-zh">许可证</span>
+            </a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">Privacy Policy</span>
+              <span class="lang-zh">隐私政策</span>
+            </a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <span class="lang-en">Terms of Service</span>
+              <span class="lang-zh">服务条款</span>
+            </a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-500 text-sm mb-4 md:mb-0">
+            <span class="lang-en">&copy; 2023 AzerothCore. All rights reserved.</span>
+            <span class="lang-zh">&copy; 2023 AzerothCore. 保留所有权利。</span>
+          </p>
+          <div class="flex space-x-6">
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">
+              <span class="lang-en">Privacy</span>
+              <span class="lang-zh">隐私</span>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">
+              <span class="lang-en">Terms</span>
+              <span class="lang-zh">条款</span>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">
+              <span class="lang-en">Cookies</span>
+              <span class="lang-zh">Cookie</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 存储下载计数数据
+    const downloadCounts = {
+      windows: 1233,
+      linux: 857,
+      maps: 1026,
+      database: 752,
+      dbc: 782,
+      vmap: 643,
+      mmaps: 598,
+      cameras: 421,
+      "maps-base": 812,
+      "runlib": 926
+    };
+
+    // 配置GitHub PAT（请替换为您自己的PAT）
+    // 注意：在生产环境中，建议通过后端服务转发API请求，而不是直接在前端暴露PAT
+    const GITHUB_PAT = '{{API_GITHUB_TOKEN}}'; // 替换为您的GitHub PAT
+
+    // 下载提示函数
+    function showDownloadNotice() {
+      const isZh = document.body.classList.contains('zh');
+      const message = isZh 
+        ? '若遇链接失效或下载失败，请前往GitHub仓库查看最新版本' 
+        : 'If the link fails, please check the GitHub repository for the latest version';
+      alert(message);
+    }
+
+    // 更新下载计数函数
+    function updateDownloadCount(type) {
+      downloadCounts[type]++;
+      
+      document.querySelectorAll(`.download-count[data-type="${type}"]`).forEach(element => {
+        element.classList.add('pulse');
+        element.textContent = downloadCounts[type];
+        setTimeout(() => {
+          element.classList.remove('pulse');
+        }, 500);
+      });
+      
+      updateDownloadChart();
+    }
+
+    // 更新下载图表
+    function updateDownloadChart() {
+      if (window.downloadsChart) {
+        window.downloadsChart.data.datasets[0].data = [
+          downloadCounts.windows,
+          downloadCounts.linux,
+          downloadCounts.maps,
+          downloadCounts.database
+        ];
+        window.downloadsChart.update();
+      }
+    }
+
+    // 使用PAT获取GitHub仓库统计信息，解除API调用次数限制
+    async function fetchGitHubRepoStats() {
+      const repo = 'azerothcore/azerothcore-wotlk';
+      const apiUrl = `https://api.github.com/repos/${repo}`;
+      
+      // 配置请求头，添加PAT认证
+      const headers = {
+        'Accept': 'application/vnd.github.v3+json'
+      };
+      
+      // 如果提供了PAT，添加到请求头
+      if (GITHUB_PAT && GITHUB_PAT !== '{{API_GITHUB_TOKEN}}') {
+        headers['Authorization'] = `token ${GITHUB_PAT}`;
+      }
+      
+      try {
+        const response = await fetch(apiUrl, { headers });
+        
+        // 检查API响应状态
+        if (!response.ok) {
+          // 处理API限制错误
+          if (response.status === 403) {
+            const resetTime = new Date(response.headers.get('X-RateLimit-Reset') * 1000);
+            console.error(`GitHub API rate limit exceeded. Reset time: ${resetTime.toLocaleTimeString()}`);
+          } else {
+            console.error(`HTTP error! status: ${response.status}`);
+          }
+          throw new Error(`Failed to fetch repo data: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // 更新Stars和Forks计数
+        const starsElement = document.getElementById('stars-count');
+        starsElement.textContent = data.stargazers_count.toLocaleString();
+        starsElement.classList.add('loaded');
+        
+        const forksElement = document.getElementById('forks-count');
+        forksElement.textContent = data.forks_count.toLocaleString();
+        forksElement.classList.add('loaded');
+        
+        const issuesElement = document.getElementById('issues-count');
+        issuesElement.textContent = data.open_issues_count.toLocaleString();
+        issuesElement.classList.add('loaded');
+        
+        // 获取贡献者数量
+        const contributorsUrl = `https://api.github.com/repos/${repo}/contributors?per_page=1`;
+        const contributorsResponse = await fetch(contributorsUrl, { headers });
+        
+        // 从响应头获取贡献者总数
+        const linkHeader = contributorsResponse.headers.get('Link');
+        const contributorsElement = document.getElementById('contributors-count');
+        
+        if (linkHeader) {
+          const lastPageMatch = linkHeader.match(/page=(\d+)>; rel="last"/);
+          if (lastPageMatch) {
+            contributorsElement.textContent = lastPageMatch[1];
+          } else {
+            contributorsElement.textContent = '1+';
+          }
+        } else {
+          // 如果没有Link头，说明只有一页贡献者
+          const contributors = await contributorsResponse.json();
+          contributorsElement.textContent = contributors.length.toString();
+        }
+        
+        contributorsElement.classList.add('loaded');
+        
+        // 显示API调用限制信息（调试用）
+        console.log('GitHub API Rate Limit Info:');
+        console.log('Remaining:', response.headers.get('X-RateLimit-Remaining'));
+        console.log('Limit:', response.headers.get('X-RateLimit-Limit'));
+        console.log('Reset Time:', new Date(parseInt(response.headers.get('X-RateLimit-Reset')) * 1000).toLocaleString());
+        
+      } catch (error) {
+        console.error('Error fetching GitHub repo stats:', error);
+        // 显示错误状态
+        const statsElements = ['stars-count', 'forks-count', 'issues-count', 'contributors-count'];
+        statsElements.forEach(id => {
+          const element = document.getElementById(id);
+          element.innerHTML = '<i class="fa fa-exclamation-circle text-red-500"></i>';
+          element.classList.add('loaded');
+        });
+      }
+    }
+
+    // 语言切换核心逻辑
+    function toggleLanguage(isZh) {
+      const body = document.body;
+      if (isZh) {
+        body.classList.add('zh');
+      } else {
+        body.classList.remove('zh');
+      }
+      
+      syncLangBtnStyles(isZh);
+      
+      if (window.downloadsChart) {
+        window.downloadsChart.data.datasets[0].label = isZh ? '下载量' : 'Downloads';
+        window.downloadsChart.options.scales.y.title.text = isZh ? '下载次数' : 'Download Count';
+        window.downloadsChart.options.plugins.tooltip.callbacks.label = function(context) {
+          const value = context.raw;
+          return isZh ? `${value} 次下载` : `${value} downloads`;
+        };
+        window.downloadsChart.update();
+      }
+    }
+
+    // 同步语言按钮样式
+    function syncLangBtnStyles(isZh) {
+      const enBtn = document.getElementById('lang-en-btn');
+      const zhBtn = document.getElementById('lang-zh-btn');
+      if (enBtn && zhBtn) {
+        enBtn.className = isZh 
+          ? 'px-3 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-blue-50 transition-colors' 
+          : 'px-3 py-2 text-sm font-medium text-primary bg-white hover:bg-blue-50 transition-colors';
+        zhBtn.className = isZh 
+          ? 'px-3 py-2 text-sm font-medium text-primary bg-white hover:bg-blue-50 transition-colors' 
+          : 'px-3 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-blue-50 transition-colors';
+      }
+
+      const mobileEnBtn = document.getElementById('mobile-lang-en-btn');
+      const mobileZhBtn = document.getElementById('mobile-lang-zh-btn');
+      if (mobileEnBtn && mobileZhBtn) {
+        mobileEnBtn.className = isZh 
+          ? 'px-3 py-1 text-sm font-medium text-gray-600 bg-white' 
+          : 'px-3 py-1 text-sm font-medium text-primary bg-white';
+        mobileZhBtn.className = isZh 
+          ? 'px-3 py-1 text-sm font-medium text-primary bg-white' 
+          : 'px-3 py-1 text-sm font-medium text-gray-600 bg-white';
+      }
+
+      const modalEnBtn = document.getElementById('modal-lang-en-btn');
+      const modalZhBtn = document.getElementById('modal-lang-zh-btn');
+      if (modalEnBtn && modalZhBtn) {
+        modalEnBtn.className = isZh 
+          ? 'px-3 py-1 text-sm font-medium text-gray-600 bg-white' 
+          : 'px-3 py-1 text-sm font-medium text-primary bg-white';
+        modalZhBtn.className = isZh 
+          ? 'px-3 py-1 text-sm font-medium text-primary bg-white' 
+          : 'px-3 py-1 text-sm font-medium text-gray-600 bg-white';
+      }
+    }
+
+    // 移动端菜单控制
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenu.classList.toggle('hidden');
+    }
+
+    // 地图弹窗控制
+    function openMapModal() {
+      const modal = document.getElementById('map-modal');
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMapModal() {
+      const modal = document.getElementById('map-modal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // FAQ 切换控制
+    function initFaqToggles() {
+      const toggles = document.querySelectorAll('.faq-toggle');
+      toggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const targetId = toggle.getAttribute('data-target');
+          const content = document.getElementById(targetId);
+          const icon = toggle.querySelector('i');
+          
+          content.classList.toggle('hidden');
+          icon.classList.toggle('rotate-180');
+        });
+      });
+    }
+
+    // 平滑滚动
+    function initSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    }
+
+    // 初始化下载按钮事件
+    function initDownloadButtons() {
+      const downloadButtons = document.querySelectorAll('.download-btn');
+      downloadButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          const downloadType = this.getAttribute('data-type');
+          
+          if (downloadType === 'maps' && (this.id === 'map-download-btn' || this.id === 'map-download-alt-btn')) {
+            e.preventDefault();
+            openMapModal();
+            return;
+          }
+          
+          updateDownloadCount(downloadType);
+          showDownloadNotice();
+        });
+      });
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      // 检查PAT是否已配置
+      if (GITHUB_PAT === 'your_github_pat_here') {
+        console.warn('请配置GitHub PAT以解除API调用限制。前往https://github.com/settings/tokens创建一个具有public_repo权限的PAT。');
+      }
+      
+      // 加载GitHub仓库统计信息
+      fetchGitHubRepoStats();
+      
+      // 初始化图表
+      const ctx = document.getElementById('downloadsChart');
+      if (ctx) {
+        const isZh = document.body.classList.contains('zh');
+        window.downloadsChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Windows', 'Linux', 'Maps', 'Database'],
+            datasets: [{
+              label: isZh ? '下载量' : 'Downloads',
+              data: [
+                downloadCounts.windows,
+                downloadCounts.linux,
+                downloadCounts.maps,
+                downloadCounts.database
+              ],
+              backgroundColor: [
+                'rgba(37, 99, 235, 0.7)',
+                'rgba(30, 64, 175, 0.7)',
+                'rgba(59, 130, 246, 0.7)',
+                'rgba(96, 165, 250, 0.7)'
+              ],
+              borderColor: [
+                'rgba(37, 99, 235, 1)',
+                'rgba(30, 64, 175, 1)',
+                'rgba(59, 130, 246, 1)',
+                'rgba(96, 165, 250, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: isZh ? '下载次数' : 'Download Count'
+                }
+              }
+            },
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const value = context.raw;
+                    return isZh ? `${value} 次下载` : `${value} downloads`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 初始化语言按钮事件
+      document.getElementById('lang-en-btn')?.addEventListener('click', () => toggleLanguage(false));
+      document.getElementById('lang-zh-btn')?.addEventListener('click', () => toggleLanguage(true));
+      document.getElementById('mobile-lang-en-btn')?.addEventListener('click', () => toggleLanguage(false));
+      document.getElementById('mobile-lang-zh-btn')?.addEventListener('click', () => toggleLanguage(true));
+      document.getElementById('modal-lang-en-btn')?.addEventListener('click', () => toggleLanguage(false));
+      document.getElementById('modal-lang-zh-btn')?.addEventListener('click', () => toggleLanguage(true));
+
+      // 初始化移动端菜单事件
+      document.getElementById('mobile-menu-button')?.addEventListener('click', toggleMobileMenu);
+
+      // 初始化地图弹窗事件
+      document.getElementById('map-download-btn')?.addEventListener('click', openMapModal);
+      document.getElementById('map-download-alt-btn')?.addEventListener('click', openMapModal);
+      document.getElementById('close-modal')?.addEventListener('click', closeMapModal);
+      document.getElementById('map-modal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('map-modal')) {
+          closeMapModal();
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !document.getElementById('map-modal').classList.contains('hidden')) {
+          closeMapModal();
+        }
+      });
+
+      // 初始化导航栏滚动效果
+      window.addEventListener('scroll', () => {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 10) {
+          navbar.classList.add('py-2');
+          navbar.classList.remove('py-4');
+        } else {
+          navbar.classList.add('py-4');
+          navbar.classList.remove('py-2');
+        }
+      });
+
+      // 初始化FAQ切换
+      initFaqToggles();
+
+      // 初始化平滑滚动
+      initSmoothScroll();
+
+      // 初始化下载按钮事件
+      initDownloadButtons();
+
+      // 初始化默认语言（中文）
+      toggleLanguage(true);
+    });
+  </script>
+</body>
+</html>

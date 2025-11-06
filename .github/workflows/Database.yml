@@ -1,0 +1,78 @@
+name: Database
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 16 * * *"
+
+jobs:
+  Build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      
+    env:
+      ROOT_DIR: ./acore
+      MODULES_DIR: ./acore/modules
+      ACORE_REPO: "https://github.com/mod-playerbots/azerothcore-wotlk.git"
+      ACORE_BRANCH: "Playerbot"
+      MODULES_INPUT: |
+        https://github.com/mod-playerbots/mod-playerbots.git master
+
+    steps:
+      - name: 克隆仓库
+        run: |
+          git clone --branch "${{ env.ACORE_BRANCH }}" "${{ env.ACORE_REPO }}" "${{ env.ROOT_DIR }}"
+          cd "${{ env.ROOT_DIR }}" && git submodule update --init --recursive
+
+      - name: 拉取模块
+        id: modules
+        run: |
+          success=()
+          failure=()
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            repo=$(echo "$line" | awk '{print $1}')
+            branch=$(echo "$line" | awk '{print $2}')
+            name=$(basename "$repo" .git)
+            if git clone --depth 1 --branch "$branch" "$repo" "${{ env.MODULES_DIR }}/$name"; then
+              success+=("$name（$branch）")
+            else
+              failure+=("$name（$branch）")
+              echo "⚠️ 模块 $name 克隆失败，将继续构建"
+            fi
+          done <<< "${{ env.MODULES_INPUT }}"
+          echo "success=$(IFS=';'; echo "${success[*]}")" >> $GITHUB_OUTPUT
+          echo "failure=$(IFS=';'; echo "${failure[*]}")" >> $GITHUB_OUTPUT
+        
+      - name: 生成时间
+        id: ts
+        run: |
+          echo "utcs=$(TZ=Asia/Shanghai date +%Y-%m-%d_%H:%M)" >> $GITHUB_OUTPUT
+          
+      - name: 文件打包
+        id: package
+        run: |
+          tar -czvf "DataBase.tar.gz" \
+            "${{ env.ROOT_DIR }}/data" \
+            "${{ env.MODULES_DIR }}/mod-playerbots/data"
+          echo "name=DataBase.tar.gz" >> $GITHUB_OUTPUT
+
+      - name: 上传Release
+        uses: ncipollo/release-action@v1
+        with:
+           tag: "DataBase"
+           name: "DataBase"
+           body: |
+              ### ${{ steps.ts.outputs.utcs }}
+              - 下载数据库后解压，复制到服务器下面的路径（需要手动创建
+                文件夹），最后运行服务器即可自动导入数据：
+                - Linux:``` /home/runner/work/acore/acore/ ```
+                - Windows:``` D:\a\acore\acore\ ```
+           artifacts: "./${{ steps.package.outputs.name }}"
+           allowUpdates: true
+           replaceArtifacts: true
+           draft: false
+           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.BUILD_AZEROTHCORE }}
