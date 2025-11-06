@@ -592,14 +592,14 @@
             </p>
             <a href="https://github.com/wowgaming/client-data/releases/download/v18.0/Data.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
-               data-type="dbc">
+               data-type="allmap">
               <i class="fa fa-download mr-1"></i> 
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
             <a href="https://gh-proxy.com/https://github.com/wowgaming/client-data/releases/download/v18.0/Data.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
-               data-type="dbc">
+               data-type="allmap">
               <i class="fa fa-download mr-1"></i> 
               <span class="lang-en">Asia</span>
               <span class="lang-zh">亚洲节点</span>
@@ -653,14 +653,14 @@
             </p>
             <a href="https://github.com/game760/mapdata/releases/download/llib/lib.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
-               data-type="runlib">
+               data-type="lib">
               <i class="fa fa-download mr-1"></i> 
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
             <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/llib/lib.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
-               data-type="runlib">
+               data-type="lib">
               <i class="fa fa-download mr-1"></i> 
               <span class="lang-en">Asia</span>
               <span class="lang-zh">亚洲节点</span>
@@ -865,19 +865,19 @@
   </footer>
 
   <script>
-    // 存储下载计数数据
+    // 存储下载计数数据 - 修复了数据初始化和对应关系
     const downloadCounts = {
       windows: 1233,
       linux: 857,
       maps: 1026,
-      database: 752,
+      database: 1352,
       dbc: 782,
-      allmap: 812,
+      allmap: 672,
       lib: 926
     };
 
     // 配置GitHub PAT（请替换为您自己的PAT）
-    const GITHUB_PAT = "{{API_GITHUB_TOKEN}}"; // 替换为您的GitHub PAT
+    const GITHUB_PAT = "{{API_GITHUB_TOKEN}}";
 
     // 下载提示函数
     function showDownloadNotice() {
@@ -890,17 +890,24 @@
 
     // 更新下载计数函数
     function updateDownloadCount(type) {
-      downloadCounts[type]++;
-      
-      document.querySelectorAll(`.download-count[data-type="${type}"]`).forEach(element => {
-        element.classList.add('pulse');
-        element.textContent = downloadCounts[type];
-        setTimeout(() => {
-          element.classList.remove('pulse');
-        }, 500);
-      });
-      
-      updateDownloadChart();
+      // 验证类型是否存在于计数对象中
+      if (downloadCounts.hasOwnProperty(type)) {
+        downloadCounts[type]++;
+        
+        // 更新所有相同类型的计数器
+        document.querySelectorAll(`.download-count[data-type="${type}"]`).forEach(element => {
+          element.classList.add('pulse');
+          element.textContent = downloadCounts[type];
+          setTimeout(() => {
+            element.classList.remove('pulse');
+          }, 500);
+        });
+        
+        // 更新图表
+        updateDownloadChart();
+      } else {
+        console.warn(`Download type "${type}" not found in downloadCounts`);
+      }
     }
 
     // 更新下载图表
@@ -1111,12 +1118,20 @@
         button.addEventListener('click', function(e) {
           const downloadType = this.getAttribute('data-type');
           
+          // 验证数据类型是否存在
+          if (!downloadType) {
+            console.warn('Download button missing data-type attribute');
+            return;
+          }
+          
+          // 地图按钮特殊处理
           if (downloadType === 'maps' && (this.id === 'map-download-btn' || this.id === 'map-download-alt-btn')) {
             e.preventDefault();
             openMapModal();
             return;
           }
           
+          // 更新下载计数
           updateDownloadCount(downloadType);
           showDownloadNotice();
         });
