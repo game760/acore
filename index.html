@@ -12,7 +12,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 
   <style>
-    /* 原有样式保持不变 */
     .hover-lift {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -171,8 +170,7 @@
   </script>
 </head>
 
-<body class="bg-gray-50 font-sans text-gray-800" zh>
-  <!-- 导航栏部分保持不变 -->
+<body class="bg-gray-50 font-sans text-gray-800">
   <header class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300" id="navbar">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center py-4">
@@ -254,7 +252,6 @@
     </div>
   </header>
 
-  <!-- Banner区域保持不变 -->
   <section class="wotlk-banner-bg text-white py-16 md:py-24">
     <div class="absolute top-20 left-10 md:left-20 w-32 h-32 md:w-48 md:h-48 rounded-full bg-white/10 blur-2xl"></div>
     <div class="absolute bottom-20 right-10 md:right-20 w-24 h-24 md:w-36 md:h-36 rounded-full bg-white/10 blur-2xl"></div>
@@ -278,7 +275,6 @@
     </div>
   </section>
 
-  <!-- 仓库统计区域保持不变 -->
   <section class="repo-stats py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
@@ -365,7 +361,6 @@
     </div>
   </section>
 
-  <!-- 下载区域保持不变 -->
   <section id="downloads" class="py-16 bg-gray-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
@@ -537,7 +532,6 @@
     </div>
   </section>
 
-  <!-- 下载统计区域保持不变 -->
   <section id="stats" class="py-12 bg-white">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
@@ -557,7 +551,6 @@
     </div>
   </section>
 
-  <!-- 地图下载模态框保持不变 -->
   <div id="map-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
     <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur fade-in"></div>
     
@@ -613,16 +606,13 @@
             </a>
           </div>
           
-      
-      <div class="p-8 md:p-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div class="border border-gray-200 rounded-xl p-6 hover-lift">
             <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
               <i class="fa fa-file-code-o text-2xl"></i>
             </div>
             <h4 class="text-lg font-semibold text-center mb-3">dbc</h4>
             <p class="text-gray-600 text-center text-sm mb-3">
-              <span class="lang-en">集成enUS和zhCN语言文件</span>
+              <span class="lang-en">Integrated enUS and zhCN language files</span>
               <span class="lang-zh">集成enUS和zhCN语言文件</span>
             </p>
             <p class="text-gray-500 text-center text-xs mb-3">
@@ -651,7 +641,7 @@
             </div>
             <h4 class="text-lg font-semibold text-center mb-3">
               <span class="lang-en">windows x64 Runtime Library</span>
-              <span class="lang-zh">windows x64  运行库</span>
+              <span class="lang-zh">windows x64 运行库</span>
             </h4>
             <p class="text-gray-600 text-center text-sm mb-3">
               <span class="lang-en">Runtime libraries required for core startup</span>
@@ -701,7 +691,6 @@
     </div>
   </div>
 
-  <!-- FAQ区域保持不变 -->
   <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
       <div class="text-center mb-12">
@@ -761,7 +750,6 @@
     </div>
   </section>
 
-  <!-- 页脚区域保持不变 -->
   <footer class="bg-gray-900 text-white pt-16 pb-8">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
@@ -889,8 +877,7 @@
     };
 
     // 配置GitHub PAT（请替换为您自己的PAT）
-    // 注意：在生产环境中，建议通过后端服务转发API请求，而不是直接在前端暴露PAT
-    const GITHUB_PAT = '{{API_GITHUB_TOKEN}}'; // 替换为您的GitHub PAT
+    const GITHUB_PAT = ''; // 替换为您的GitHub PAT
 
     // 下载提示函数
     function showDownloadNotice() {
@@ -929,27 +916,25 @@
       }
     }
 
-    // 使用PAT获取GitHub仓库统计信息，解除API调用次数限制
+    // 使用PAT获取GitHub仓库统计信息
     async function fetchGitHubRepoStats() {
       const repo = 'azerothcore/azerothcore-wotlk';
       const apiUrl = `https://api.github.com/repos/${repo}`;
       
-      // 配置请求头，添加PAT认证
+      // 配置请求头
       const headers = {
         'Accept': 'application/vnd.github.v3+json'
       };
       
       // 如果提供了PAT，添加到请求头
-      if (GITHUB_PAT && GITHUB_PAT !== '{{API_GITHUB_TOKEN}}') {
+      if (GITHUB_PAT) {
         headers['Authorization'] = `token ${GITHUB_PAT}`;
       }
       
       try {
         const response = await fetch(apiUrl, { headers });
         
-        // 检查API响应状态
         if (!response.ok) {
-          // 处理API限制错误
           if (response.status === 403) {
             const resetTime = new Date(response.headers.get('X-RateLimit-Reset') * 1000);
             console.error(`GitHub API rate limit exceeded. Reset time: ${resetTime.toLocaleTimeString()}`);
@@ -996,12 +981,6 @@
         }
         
         contributorsElement.classList.add('loaded');
-        
-        // 显示API调用限制信息（调试用）
-        console.log('GitHub API Rate Limit Info:');
-        console.log('Remaining:', response.headers.get('X-RateLimit-Remaining'));
-        console.log('Limit:', response.headers.get('X-RateLimit-Limit'));
-        console.log('Reset Time:', new Date(parseInt(response.headers.get('X-RateLimit-Reset')) * 1000).toLocaleString());
         
       } catch (error) {
         console.error('Error fetching GitHub repo stats:', error);
@@ -1147,7 +1126,7 @@
     // 页面加载完成后初始化
     document.addEventListener('DOMContentLoaded', function() {
       // 检查PAT是否已配置
-      if (GITHUB_PAT === 'your_github_pat_here') {
+      if (!GITHUB_PAT) {
         console.warn('请配置GitHub PAT以解除API调用限制。前往https://github.com/settings/tokens创建一个具有public_repo权限的PAT。');
       }
       
