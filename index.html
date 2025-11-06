@@ -573,12 +573,12 @@
       
       <div class="gradient-bg p-8 md:p-10">
         <h3 class="text-2xl md:text-3xl font-bold text-black">
-          <span class="lang-en">Map Resources</span>
-          <span class="lang-zh">地图资源文件</span>
+          <span class="lang-en">Map resource package</span>
+          <span class="lang-zh">地图资源包</span>
         </h3>
         <p class="text-blue-100 mt-2">
-          <span class="lang-en text-black">Download the necessary map components for your server</span>
-          <span class="lang-zh text-black">下载服务器所需的地图组件</span>
+          <span class="lang-en text-black">Download the map package required by the server</span>
+          <span class="lang-zh text-black">下载服务器所需的地图包</span>
         </p>
       </div>
       
@@ -588,141 +588,57 @@
             <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
               <i class="fa fa-file-code-o text-2xl"></i>
             </div>
+            <h4 class="text-lg font-semibold text-center mb-3">All Mapdata</h4>
+            <p class="text-gray-600 text-center text-sm mb-3">
+              <span class="lang-en">Complete map package</span>
+              <span class="lang-zh">完整的地图包</span>
+            </p>
+            <p class="text-gray-500 text-center text-xs mb-3">
+              <i class="fa fa-download text-green-500 mr-1"></i> 
+              <span class="download-count" data-type="allmap">782</span>
+            </p>
+            <a href="https://github.com/wowgaming/client-data/releases/download/v18.0/Data.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
+               data-type="dbc">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Global</span>
+              <span class="lang-zh">全球节点</span>
+            </a>
+            <a href="https://gh-proxy.com/https://github.com/wowgaming/client-data/releases/download/v18.0/Data.zip" target="_blank"
+               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
+               data-type="dbc">
+              <i class="fa fa-download mr-1"></i> 
+              <span class="lang-en">Asia</span>
+              <span class="lang-zh">亚洲节点</span>
+            </a>
+          </div>
+          
+      
+      <div class="p-8 md:p-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
+            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
+              <i class="fa fa-file-code-o text-2xl"></i>
+            </div>
             <h4 class="text-lg font-semibold text-center mb-3">dbc</h4>
             <p class="text-gray-600 text-center text-sm mb-3">
-              <span class="lang-en">Database client files containing game data</span>
-              <span class="lang-zh">包含游戏数据的数据库客户端文件</span>
+              <span class="lang-en">集成enUS和zhCN语言文件</span>
+              <span class="lang-zh">集成enUS和zhCN语言文件</span>
             </p>
             <p class="text-gray-500 text-center text-xs mb-3">
               <i class="fa fa-download text-green-500 mr-1"></i> 
               <span class="download-count" data-type="dbc">782</span>
             </p>
-            <a href="https://github.com/game760/mapdata/releases/download/MapData/dbc.zip" target="_blank"
+            <a href="https://github.com/game760/mapdata/releases/download/v18/dbc.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="dbc">
               <i class="fa fa-download mr-1"></i> 
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/dbc.zip" target="_blank"
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/v18/dbc.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
                data-type="dbc">
-              <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Asia</span>
-              <span class="lang-zh">亚洲节点</span>
-            </a>
-          </div>
-          
-          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
-            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
-              <i class="fa fa-cubes text-2xl"></i>
-            </div>
-            <h4 class="text-lg font-semibold text-center mb-3">vmap</h4>
-            <p class="text-gray-600 text-center text-sm mb-3">
-              <span class="lang-en">Visibility maps for line of sight calculations</span>
-              <span class="lang-zh">用于视线计算的可见性地图</span>
-            </p>
-            <p class="text-gray-500 text-center text-xs mb-3">
-              <i class="fa fa-download text-green-500 mr-1"></i> 
-              <span class="download-count" data-type="vmap">643</span>
-            </p>
-            <a href="https://github.com/game760/mapdata/releases/download/MapData/vmaps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
-               data-type="vmap">
-              <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Global</span>
-              <span class="lang-zh">全球节点</span>
-            </a>
-            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/vmaps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
-               data-type="vmap">
-              <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Asia</span>
-              <span class="lang-zh">亚洲节点</span>
-            </a>
-          </div>
-          
-          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
-            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
-              <i class="fa fa-road text-2xl"></i>
-            </div>
-            <h4 class="text-lg font-semibold text-center mb-3">mmaps</h4>
-            <p class="text-gray-600 text-center text-sm mb-3">
-              <span class="lang-en">Movement maps for creature navigation</span>
-              <span class="lang-zh">用于生物导航的移动地图</span>
-            </p>
-            <p class="text-gray-500 text-center text-xs mb-3">
-              <i class="fa fa-download text-green-500 mr-1"></i> 
-              <span class="download-count" data-type="mmaps">598</span>
-            </p>
-            <a href="https://github.com/game760/mapdata/releases/download/MapData/mmaps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
-               data-type="mmaps">
-              <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Global</span>
-              <span class="lang-zh">全球节点</span>
-            </a>
-            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/mmaps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
-               data-type="mmaps">
-              <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Asia</span>
-              <span class="lang-zh">亚洲节点</span>
-            </a>
-          </div>
-          
-          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
-            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
-              <i class="fa fa-video-camera text-2xl"></i>
-            </div>
-            <h4 class="text-lg font-semibold text-center mb-3">Cameras</h4>
-            <p class="text-gray-600 text-center text-sm mb-3">
-              <span class="lang-en">Camera position data for in-game views</span>
-              <span class="lang-zh">用于游戏内视图的相机位置数据</span>
-            </p>
-            <p class="text-gray-500 text-center text-xs mb-3">
-              <i class="fa fa-download text-green-500 mr-1"></i> 
-              <span class="download-count" data-type="cameras">421</span>
-            </p>
-            <a href="https://github.com/game760/mapdata/releases/download/MapData/Cameras.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
-               data-type="cameras">
-              <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Global</span>
-              <span class="lang-zh">全球节点</span>
-            </a>
-            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/Cameras.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
-               data-type="cameras">
-              <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Asia</span>
-              <span class="lang-zh">亚洲节点</span>
-            </a>
-          </div>
-          
-          <div class="border border-gray-200 rounded-xl p-6 hover-lift">
-            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-blue-50 text-primary mb-5 mx-auto">
-              <i class="fa fa-map-o text-2xl"></i>
-            </div>
-            <h4 class="text-lg font-semibold text-center mb-3">Maps</h4>
-            <p class="text-gray-600 text-center text-sm mb-3">
-              <span class="lang-en">Base map files for world geometry</span>
-              <span class="lang-zh">用于世界几何的基础地图文件</span>
-            </p>
-            <p class="text-gray-500 text-center text-xs mb-3">
-              <i class="fa fa-download text-green-500 mr-1"></i> 
-              <span class="download-count" data-type="maps-base">812</span>
-            </p>
-            <a href="https://github.com/game760/mapdata/releases/download/MapData/maps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
-               data-type="maps-base">
-              <i class="fa fa-download mr-1"></i> 
-              <span class="lang-en">Global</span>
-              <span class="lang-zh">全球节点</span>
-            </a>
-            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/MapData/maps.zip" target="_blank"
-               class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
-               data-type="maps-base">
               <i class="fa fa-download mr-1"></i> 
               <span class="lang-en">Asia</span>
               <span class="lang-zh">亚洲节点</span>
@@ -738,21 +654,21 @@
               <span class="lang-zh">windows x64  运行库</span>
             </h4>
             <p class="text-gray-600 text-center text-sm mb-3">
-              <span class="lang-en">The runtime compressed file required for game runtime</span>
-              <span class="lang-zh">win系统核心运行时所需的运行库压缩包</span>
+              <span class="lang-en">Runtime libraries required for core startup</span>
+              <span class="lang-zh">核心启动所需的运行库</span>
             </p>
             <p class="text-gray-500 text-center text-xs mb-3">
               <i class="fa fa-download text-green-500 mr-1"></i> 
-              <span class="download-count" data-type="runlib">926</span>
+              <span class="download-count" data-type="lib">926</span>
             </p>
-            <a href="https://github.com/game760/acore/releases/download/Runlib/Runlib.zip" target="_blank"
+            <a href="https://github.com/game760/mapdata/releases/download/llib/lib.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-primary text-white rounded-lg text-center text-sm font-medium hover:bg-secondary transition-colors mb-2"
                data-type="runlib">
               <i class="fa fa-download mr-1"></i> 
               <span class="lang-en">Global</span>
               <span class="lang-zh">全球节点</span>
             </a>
-            <a href="https://gh-proxy.com/https://github.com/game760/acore/releases/download/Runlib/Runlib.zip" target="_blank"
+            <a href="https://gh-proxy.com/https://github.com/game760/mapdata/releases/download/llib/lib.zip" target="_blank"
                class="download-btn block w-full py-2 px-3 bg-Asia text-white rounded-lg text-center text-sm font-medium hover:bg-green-600 transition-colors"
                data-type="runlib">
               <i class="fa fa-download mr-1"></i> 
@@ -963,16 +879,13 @@
   <script>
     // 存储下载计数数据
     const downloadCounts = {
-      windows: 1233,
-      linux: 857,
-      maps: 1026,
-      database: 752,
-      dbc: 782,
-      vmap: 643,
-      mmaps: 598,
-      cameras: 421,
-      "maps-base": 812,
-      "runlib": 926
+      'windows': 1233,
+      'linux': 857,
+      'maps': 1026,
+      'database': 752,
+      'dbc': 782,
+      'allmap': 812,
+      'lib': 926
     };
 
     // 配置GitHub PAT（请替换为您自己的PAT）
