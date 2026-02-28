@@ -19,6 +19,7 @@ jobs:
       ACORE_BRANCH: "Playerbot"
       MODULES_INPUT: |
         https://github.com/mod-playerbots/mod-playerbots.git master
+        https://github.com/NathanHandley/mod-ah-bot-plus.git master
 
     steps:
       - name: 克隆仓库
