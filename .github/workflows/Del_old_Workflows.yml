@@ -16,5 +16,5 @@ jobs:
         uses: Mattraks/delete-workflow-runs@main
         with:
           token: ${{ secrets.BUILD_AZEROTHCORE }}
-          keep_minimum_runs: 5
+          keep_minimum_runs: 3
           retain_days: 0
