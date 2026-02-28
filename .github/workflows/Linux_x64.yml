@@ -22,6 +22,7 @@ jobs:
       MODULES_INPUT: |
         https://github.com/mod-playerbots/mod-playerbots.git master
         https://github.com/azerothcore/mod-ale.git master
+        https://github.com/Wishmaster117/mod-junk-to-gold.git master
         
     steps:
       - name: 安装系统依赖
